@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>老师出题界面</title>
+    <script src="../jq/jquery-3.4.1.min (1).js"></script>
+    <script src="../jq/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <link rel="stylesheet" href="../css/entry_questions.css">
+    <script src="../layui/layui.js"></script>
+</head>
+<body style="background-color:  rgb(245, 247, 249);">
+  <div  style="width: 100%;height: 62px;background-color: #363c40;">
+      <div class="layui-col-md10 layui-col-md-offset1">
+          <ul class="layui-nav" lay-filter="" style="background-color: #363c40;">
+              <li  class="layui-nav-item"><a href="老师端界面.html" style="font-size:20px">在线考试系统</a></li>
+              <li class="layui-nav-item "><a href="test_paper2.html">出考卷</a></li>
+              <li class="layui-nav-item "><a href="insert_student.html">学生</a></li>
+              <li class="layui-nav-item layui-this"><a href="entry_questions.html">出题</a></li>
+              <li class="layui-nav-item" style="float:right">
+                  <a href="personalHomepage.jsp">我</a>
+                  <dl class="layui-nav-child">
+                      <dd><a href="teacherPersonalHomepage.html">个人界面</a></dd>
+                      <dd><a href="login.html" onclick="exit()">退出</a></dd>
+                  </dl>
+              </li>
+              <li class="layui-nav-item" style="float:right">
+                  <a href="老师端界面.html">个人主页 |<span class="layui-badge-dot"></span></a>
+              </li>
+              <li class="layui-nav-item" style="float:right">
+                  <a href="message.html"><i class="layui-icon layui-icon-email" style="font-size: 16px; color: #47a7ef;">消息 </i> <span class="layui-badge">1</span> |</a>
+              </li>
+          </ul>
+      </div>
+  </div>             
+      <div class="layui-row">
+<!--        <div class="layui-col-md3 layui-col-md-offset1 title-left">-->
+<!--          <div class="grid-demo">-->
+<!-- &lt;!&ndash; 姓名传入              &ndash;&gt;-->
+<!--              <div>你的姓名：<span id="name">rrr</span></div>-->
+<!--              <div>你的班级：<span id="achievement">111</span></div>-->
+<!--          </div>-->
+<!--        </div>-->
+        <div class="layui-col-md10 layui-col-md-offset1">
+          <div class="grid-demo grid-demo-bg1 title-right">
+            <div>老师注意：<span>表明题目难度</span></div>
+            <div>出题建议：<span>高中低难度平均</span></div>
+          </div>
+        </div>
+      </div>
+      <div class="layui-row">
+        <div class="layui-col-md10 layui-col-md-offset1">
+          <div class="grid-demo-bg1" style="margin-top: -10px;">
+            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" style="padding: 10px;">
+                <ul class="layui-tab-title">
+                  <li class="layui-this">单选题</li>
+                  <li>多选题</li>
+                  <li>填空题</li>
+                  <li>主观题</li>
+                </ul>
+                <div class="layui-form-item" style="margin-top: 20px;">
+                    <label class="layui-form-label"><i class="layui-icon layui-icon-template-1" style="color: #725050;"></i>   科目类型</label>
+                    <div class="layui-input-inline">
+                        <input id="coursetype"  type="text" name="coursetype" required  lay-verify="required" placeholder="请输入科目" autocomplete="off" class="layui-input">
+                    </div>
+                    <label class="layui-form-label" style="width: 200px;"><i class="layui-icon layui-icon-note" style="color: #b40000;"></i>   知识点类型</label>
+                    <div class="layui-input-inline">
+                        <input id="type" type="text" name="type" required  lay-verify="required" placeholder="请输入知识点类型" autocomplete="off" class="layui-input">
+                    </div>
+                </div>
+<!--                <div class="layui-form-item">-->
+<!--                    <label class="layui-form-label">科目类型</label>-->
+<!--                    <div class="layui-input-block">-->
+<!--                        <input id="coursetype"  type="text" name="coursetype" required  lay-verify="required" placeholder="请输入科目" autocomplete="off" class="layui-input">-->
+<!--                    </div>-->
+<!--                </div>-->
+<!-- 添加题-->   
+<!-- 选择则 -->
+                <div class="layui-tab-content">
+                  <div class="layui-tab-item layui-show">
+                    <div class="layui-collapse">
+                        <div class="layui-colla-item">
+                          <h2 class="layui-colla-title">增加选择题目:</h2>
+                          <div class="layui-colla-content layui-show">
+                              <form class="layui-form" action="" lay-filter="dan1">
+                                <div class="layui-form-item" style="margin-top:10px ;">
+                                    <div style="margin-bottom: 20px;">
+                                        <span><i class="layui-icon layui-icon-file-b" style="color: #c2c112;"></i>   题目：</span>
+                                        <textarea name="title" placeholder="请输入题目" lay-verify="required" class="layui-textarea "></textarea>
+<!--                                        <input type="text" name="title" required  lay-verify="required" placeholder="请输入题目" autocomplete="off" class="layui-input ">-->
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label" style="width: auto"><i class="layui-icon layui-icon-edit" style="color: #4f71df;"></i>   分数：</label>
+                                        <div class="layui-input-inline">
+                                            <input type="number" value="1" min="0" max="100" step="1" name="score" required  lay-verify="required" placeholder="请输入题目的分数" autocomplete="off" class="layui-input" style="width: 142px;">
+                                        </div>
+                                        <label class="layui-form-label" style="width: 100px;"><i class="layui-icon layui-icon-util" style="color: #10abee;"></i>   难度：</label>
+                                        <div class="">
+                                            <input type="radio" name="diffcult" value="1" title="简单"checked>
+                                            <input name="diffcult" title="中等"  type="radio" value="2">
+                                            <input name="diffcult" title="困难"  type="radio" value="3">
+                                        </div>
+                                    </div>
+                                    <span><i class="layui-icon layui-icon-form" style="color:#fe9301;"></i>   选项：</span><br>
+                                    <div class="choice_box">
+                                        <input type="text" name="choicea" required  lay-verify="required" placeholder="请输入A选项" autocomplete="off" class="layui-input ">
+                                    </div>
+                                    <div class="choice_box">
+                                        <input type="text" name="choiceb" required  lay-verify="required" placeholder="请输入B选项" autocomplete="off" class="layui-input ">
+                                    </div>
+                                    <div class="choice_box">
+                                        <input type="text" name="choicec" required  lay-verify="required" placeholder="请输入C选项" autocomplete="off" class="layui-input ">
+                                    </div>
+                                    <div class="choice_box">
+                                          <input type="text" name="choiced" required  lay-verify="required" placeholder="请输入D选项" autocomplete="off" class="layui-input ">
+                                    </div>
+                                    <div class="choice_box" style="margin-top: 17px;">
+                                      <span><i class="layui-icon layui-icon-ok" style="color:#30b656;"></i>   正确答案:</span>
+                                      <input type="radio" name="single_choice" value="A" title="A"checked>
+                                      <input name="single_choice" title="B"  type="radio" value="B">
+                                      <input name="single_choice" title="C"  type="radio" value="C">
+                                      <input name="single_choice" title="D"  type="radio" value="D">
+                                    </div>
+                                      <p><i class="layui-icon layui-icon-help" style="color: #f673b2;"></i>   解析:<span></span></p>
+                                      <div class="layui-form-item layui-form-text">
+                                              <textarea name="answer" required lay-verify="required" placeholder="请输入" class="layui-textarea"></textarea>
+                                        </div>
+                                    <button type="button"  class="tijiao layui-btn layui-input-inline layui-btn-sm layui-btn-radius layui-btn-normal" lay-submit lay-filter="danxuanti">&nbsp&nbsp&nbsp确定,下一题&nbsp&nbsp&nbsp</button><br>
+                                </div>
+                            </form>
+                          </div>
+                        </div>
+                    </div>
+                </div>
+
+       <!-- 多选  -->       
+               <div class="layui-tab-item">
+                  <div class="layui-collapse">
+                      <div class="layui-colla-item">
+                        <h2 class="layui-colla-title">增加多选题目:</h2>
+                        <div class="layui-colla-content layui-show">
+                            <form class="layui-form" action="" lay-filter="duo1">
+                                <div class="layui-form-item" style="margin-top:10px ;">
+                                    <div style="margin-bottom: 20px;">
+                                        <span><i class="layui-icon layui-icon-file-b" style="color: #c2c112;"></i>   题目：</span>
+                                        <textarea name="title" placeholder="请输入题目" lay-verify="required" class="layui-textarea " ></textarea>
+                                        <!--                                        <input type="text" name="title" required  lay-verify="required" placeholder="请输入题目" autocomplete="off" class="layui-input ">-->
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label" style="width: auto"><i class="layui-icon layui-icon-edit" style="color: #4f71df;"></i>   分数：</label>
+                                        <div class="layui-input-inline">
+                                            <input  type="number" value="1" min="0" max="100" step="1" name="score" required  lay-verify="required" placeholder="请输入题目的分数" autocomplete="off" class="layui-input " style="width: 142px;">
+                                        </div>
+                                        <label class="layui-form-label" style="width: 100px;"><i class="layui-icon layui-icon-util " style="color: #10abee;"></i>   难度：</label>
+                                        <div class="">
+                                            <input type="radio" name="diffcult" value="1" title="简单"checked>
+                                            <input name="diffcult" title="中等"  type="radio" value="2">
+                                            <input name="diffcult" title="困难"  type="radio" value="3">
+                                        </div>
+                                    </div>
+                                    <span><i class="layui-icon layui-icon-form" style="color: #fe9301;"></i>   选项：</span><br>
+                                    <div class="choice_box">
+                                        <input type="text" name="choicea" required  lay-verify="required" placeholder="请输入A选项" autocomplete="off" class="layui-input ">
+                                    </div>
+                                    <div class="choice_box">
+
+                                        <input type="text" name="choiceb" required  lay-verify="required" placeholder="请输入B选项" autocomplete="off" class="layui-input ">
+                                    </div>
+                                    <div class="choice_box">
+                                        <input type="text" name="choicec" required  lay-verify="required" placeholder="请输入C选项" autocomplete="off" class="layui-input ">
+                                    </div>
+                                    <div class="choice_box">
+                                        <input type="text" name="choiced" required  lay-verify="required" placeholder="请输入D选项" autocomplete="off" class="layui-input ">
+                                    </div>
+                                    <div style="margin-top: 20px">
+                                        <span ><i class="layui-icon layui-icon-ok" style="color: #30b656;"></i>   正确答案:</span>
+                                        <input name="answerA" title="A" type="checkbox">
+                                        <input name="answerB" title="B" type="checkbox" >
+                                        <input name="answerC" title="C" type="checkbox">
+                                        <input name="answerD" title="D" type="checkbox">
+                                    </div>
+
+                                    <p style="margin-top: 20px"><i class="layui-icon layui-icon-help" style="color: #f673b2;"></i>   解析:<span></span></p>
+                                    <div class="layui-form-item layui-form-text">
+                                        <textarea name="rightres" required lay-verify="required" placeholder="请输入解析" class="layui-textarea "></textarea>
+                                    </div>
+                                    <button type="button"  class="tijiao layui-btn layui-input-inline layui-btn-sm layui-btn-radius layui-btn-normal" lay-submit lay-filter="duoxuanti">&nbsp&nbsp&nbsp确定,下一题&nbsp&nbsp&nbsp</button><br>
+                                </div>
+
+
+
+
+
+<!--                              <div class="layui-form-item" style="margin-top:10px ;">-->
+<!--                                  <div><span>题目：</span>-->
+<!--                                      <input type="text" name="title" required  lay-verify="required" placeholder="请输入题目" autocomplete="off" class="layui-input ">-->
+<!--                                  </div>-->
+<!--                                  <div style="margin-bottom: 20px;">-->
+<!--                                      <span>分数：</span>-->
+<!--                                      <input type="text" name="score" required  lay-verify="required" placeholder="请输入题目的分数" autocomplete="off" class="layui-input ">-->
+<!--                                  </div>-->
+<!--                                  <div style="margin-bottom: 20px;">-->
+<!--                                      <span>难度：</span>-->
+<!--                                      <input type="text" name="diffcult" required  lay-verify="required" placeholder="请输入题目的难度" autocomplete="off" class="layui-input ">-->
+<!--                                  </div>-->
+<!--                                  <span>选项：</span><br>-->
+<!--                                    <div class="choice_box">-->
+<!--                                        <input type="text" name="choicea" required  lay-verify="required" placeholder="请输入A选项" autocomplete="off" class="layui-input ">-->
+<!--                                    </div>-->
+<!--                                    <div class="choice_box">-->
+<!--                                        -->
+<!--                                        <input type="text" name="choiceb" required  lay-verify="required" placeholder="请输入B选项" autocomplete="off" class="layui-input ">-->
+<!--                                    </div>-->
+<!--                                    <div class="choice_box">-->
+<!--                                        <input type="text" name="choicec" required  lay-verify="required" placeholder="请输入C选项" autocomplete="off" class="layui-input ">-->
+<!--                                    </div>-->
+<!--                                    <div class="choice_box">-->
+<!--                                         <input type="text" name="choiced" required  lay-verify="required" placeholder="请输入D选项" autocomplete="off" class="layui-input ">-->
+<!--                                    </div>  -->
+<!--                                      <span>正确答案:</span>-->
+<!--                                      <input name="answerA" title="A" type="checkbox">-->
+<!--                                      <input name="answerB" title="B" type="checkbox" >-->
+<!--                                      <input name="answerC" title="C" type="checkbox">-->
+<!--                                      <input name="answerD" title="D" type="checkbox">-->
+<!--                                      <p>解析:<span></span></p>-->
+<!--                                      <div class="layui-form-item layui-form-text">-->
+<!--                                              <textarea name="rightres" required lay-verify="required" placeholder="请输入解析" class="layui-textarea"></textarea>-->
+<!--                                        </div>-->
+<!--                                        <button type="button"  class="tijiao layui-btn layui-input-inline layui-btn-sm layui-btn-radius layui-btn-normal" lay-submit lay-filter="duoxuanti">&nbsp&nbsp&nbsp确定,下一题&nbsp&nbsp&nbsp</button><br>-->
+<!--                              </div>-->
+                          </form>
+                        </div>
+                      </div>
+                  </div>
+              </div>
+  <!-- 填空题                 -->
+                  <div class="layui-tab-item ">
+                    <div class="layui-collapse">
+                        <div class="layui-colla-item">
+                          <h2 class="layui-colla-title"><span>增加填空题:</span></h2>
+                          <div class="layui-colla-content layui-show">
+                            <form class="layui-form" action="" lay-filter="tian1">
+                                <div class="layui-form-item">
+                                    <div style="margin-bottom: 20px;">
+                                        <span><i class="layui-icon layui-icon-file-b" style="color:#c2c112;"></i>   题目：</span>
+                                        <textarea name="pinName" placeholder="请输入题目" lay-verify="required" class="layui-textarea"></textarea>
+                                        <!--                                        <input type="text" name="title" required  lay-verify="required" placeholder="请输入题目" autocomplete="off" class="layui-input ">-->
+                                    </div>
+                                    <div class="layui-form-item">
+                                        <label class="layui-form-label" style="width: auto"><i class="layui-icon layui-icon-edit" style="color: #4f71df;"></i>   分数：</label>
+                                        <div class="layui-input-inline">
+                                            <input type="number" value="1" min="0" max="100" step="1" name="pinScore" required  lay-verify="required" placeholder="请输入题目的分数" autocomplete="off" class="layui-input" style="width: 142px;">
+                                        </div>
+                                        <label class="layui-form-label" style="width: 100px;"><i class="layui-icon layui-icon-util" style="color: #10abee;"></i>   难度：</label>
+                                        <div class="">
+                                            <input type="radio" name="pinDifficult" value="1" title="简单"checked>
+                                            <input name="pinDifficult" title="中等"  type="radio" value="2">
+                                            <input name="pinDifficult" title="困难"  type="radio" value="3">
+                                        </div>
+                                    </div>
+<!--                                    -->
+<!--                                <div><span>题目：</span>-->
+<!--                                    <input type="text" name="pinName" required  lay-verify="required" placeholder="请输入题目" autocomplete="off" class="layui-input ">-->
+<!--                                </div>-->
+<!--                                    <div style="margin-bottom: 20px;">-->
+<!--                                        <span>分数：</span>-->
+<!--                                        <input type="text" name="pinScore" required  lay-verify="required" placeholder="请输入题目的分数" autocomplete="off" class="layui-input ">-->
+<!--                                    </div>-->
+<!--                                    <div style="margin-bottom: 20px;">-->
+<!--                                        <span>难度：</span>-->
+<!--                                        <input type="text" name="pinDifficult" required  lay-verify="required" placeholder="请输入题目的难度" autocomplete="off" class="layui-input ">-->
+<!--                                    </div>-->
+                                <div>
+                                    <span><i class="layui-icon layui-icon-ok" style="color: #30b656;"></i>   正确答案：</span>
+                                    <textarea name="pinAnswer" required lay-verify="required" style="width:100%;height:25px" placeholder="请输入" class="layui-textarea"></textarea>
+                                </div>
+
+                                <p style="margin-top: 20px"><i class="layui-icon layui-icon-help" style="color: #f673b2;"></i>   解析:<span></span></p>
+                                <div class="layui-form-item layui-form-text">
+                                        <textarea name="pinAnly" required lay-verify="required" placeholder="请输入" class="layui-textarea"></textarea>
+                                </div>
+                                <div>
+                                     <button type="button"  class="tijiao layui-btn layui-input-inline layui-btn-sm layui-btn-radius layui-btn-normal" lay-submit lay-filter="tiankongti">&nbsp&nbsp&nbsp确定,下一题&nbsp&nbsp&nbsp</button><br>
+                                </div>
+                                </div>
+                              </form>
+                          </div>
+                        </div>
+
+                  </div>
+                  </div>
+  <!-- 主观题                 -->
+                  <div class="layui-tab-item">
+                    <div class="layui-collapse">
+                        <div class="layui-colla-item">
+                          <h2 class="layui-colla-title">增加主观题:</h2>
+                          <div class="layui-colla-content layui-show">
+                              <form class="layui-form" action="" lay-filter="zhu1">
+                                  <div class="layui-form-item">
+                                      <div style="margin-bottom: 20px;">
+                                          <span><i class="layui-icon layui-icon-file-b" style="color: #c2c112;"></i>   题目：</span>
+                                          <textarea name="pinName" placeholder="请输入题目" lay-verify="required" class="layui-textarea"></textarea>
+                                          <!--                                        <input type="text" name="title" required  lay-verify="required" placeholder="请输入题目" autocomplete="off" class="layui-input ">-->
+                                      </div>
+                                      <div class="layui-form-item">
+                                          <label class="layui-form-label" style="width: auto"><i class="layui-icon layui-icon-edit" style="color: #4f71df;"></i>   分数：</label>
+                                          <div class="layui-input-inline">
+                                              <input type="number" value="1" min="0" max="100" step="1" name="pinScore" required  lay-verify="required" placeholder="请输入题目的分数" autocomplete="off" class="layui-input" style="width: 142px;">
+                                          </div>
+                                          <label class="layui-form-label" style="width: 100px;"><i class="layui-icon layui-icon-util" style="color: #10abee;"></i>   难度：</label>
+                                          <div class="">
+                                              <input type="radio" name="pinDifficult" value="1" title="简单"checked>
+                                              <input name="pinDifficult" title="中等"  type="radio" value="2">
+                                              <input name="pinDifficult" title="困难"  type="radio" value="3">
+                                          </div>
+                                      </div>
+<!--                              <div><span>题目：</span>-->
+<!--                                  <input type="text" name="pinName" required  lay-verify="required" placeholder="请输入题目" autocomplete="off" class="layui-input ">-->
+<!--                              </div>-->
+<!--                              <div style="margin-bottom: 20px;">-->
+<!--                                  <span>分数：</span>-->
+<!--                                  <input type="text" name="pinScore" required  lay-verify="required" placeholder="请输入题目的分数" autocomplete="off" class="layui-input ">-->
+<!--                              </div>-->
+<!--                              <div style="margin-bottom: 20px;">-->
+<!--                                  <span>难度：</span>-->
+<!--                                  <input type="text" name="pinDifficult" required  lay-verify="required" placeholder="请输入题目的难度" autocomplete="off" class="layui-input ">-->
+<!--                              </div>-->
+                              <div><span><i class="layui-icon layui-icon-ok" style="color: #30b656;"></i>   正确答案：</span>
+                                  <textarea name="pinAnswer" required lay-verify="required" style="width:100%;height:25px" placeholder="请输入" class="layui-textarea"></textarea></div>
+                            <p style="margin-top: 20px"><i class="layui-icon layui-icon-help" style="color: #f673b2;"></i>   解析:<span></span></p>
+                            <div class="layui-form-item layui-form-text">
+                                <textarea name="pinAnly" required lay-verify="required" placeholder="请输入" class="layui-textarea"></textarea>
+                            </div>
+                                  <div>
+                                     <button type="button"  class="tijiao layui-btn layui-input-inline layui-btn-sm layui-btn-radius layui-btn-normal" lay-submit lay-filter="jiandati">&nbsp&nbsp&nbsp确定,下一题&nbsp&nbsp&nbsp</button><br>
+                                    </div>
+                              </div>
+                            </form>
+                        </div>
+                      </div>
+                  </div>
+                </div>
+              </div>
+          </div>
+        </div>
+      </div>
+      <table class="layui-hide" id="demo" lay-filter="test" style="display: none;"></table>
+      </div>
+</body>
+<script>
+    function exit() {
+        $.cookie('userEmail', '', { expires: -1 }); // 删除 cookie
+        $.cookie('token', '', { expires: -1 }); // 删除 cookie
+        $.cookie("examName",'',{ expires: -1 });
+    }
+</script>
+
+<script>
+    // $(document).ready(function () {
+    //         var data = {
+    //             useremail:$.cookie("useremail")
+    //         }
+    //         AJAX.get1("/checkUser",data,function (res) {
+    //             if (res.flag){
+    //                 var obj = res['map']['obj'];
+    //                 if (obj['userType']==1){
+    //                     alert("权限不足");
+    //                     location.href = "login.html";
+    //                 }
+    //             }
+    //             else {
+    //                 alert(res.msg);
+    //                 location.href = "login.html";
+    //             }
+    //
+    //         })
+    //     }
+    // )
+
+
+    //注意：导航 依赖 element 模块，否则无法进行功能性操作
+    layui.use(['rate','element','form','layer'], function(){
+        var element = layui.element;
+        var rate = layui.rate;
+        var form = layui.form;
+        var layer=layui.layer;
+        //增加单选题
+        form.on('submit(danxuanti)', function(data){
+            alert(data.field);
+            console.log(data.field);
+            var res = data.field;
+            var type_val = $("#type").val();
+            var course_type_val = $("#coursetype").val();
+            console.log(type_val);
+            $.ajax({
+                url:"/subject",
+                data:{
+                    "title":res.title,
+                    "score":res.score,
+                    "diffcult":res.diffcult,
+                    "answer":res.answer,
+                    "choicea":res.choicea,
+                    "choiceb":res.choiceb,
+                    "choicec":res.choicec,
+                    "choiced":res.choiced,
+                    "rightres":res.single_choice,
+                    "type_t":type_val,
+                    "useremail":$.cookie("userEmail"),
+                    "course_type":course_type_val
+                },
+                type:"POST",
+                success:function (res) {
+                    if (!res.flag){
+                        layer.alert("出错了");
+                    }
+                    else{
+                        layer.msg("添加成功");
+                        form.val("dan1", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+                            "title": "" // "name": "value"
+                            ,"score": "1"
+                            ,"diffcult": "简单"
+                            ,"choicea": ""
+                            ,"choiceb": ""
+                            ,"choicec": ""
+                            ,"choiced": ""
+                            ,"rightres": "A"
+                            ,"answer":""
+                        });
+                    }
+                }
+            })
+        })
+        //增加多选题
+        form.on('submit(duoxuanti)', function(data){
+            console.log(data.field);
+            var res = data.field;
+            var type_val = $("#type").val();
+            var course_type_val = $("#coursetype").val();
+            console.log(type_val);
+            res['type_t'] = type_val;
+            res['useremail'] = $.cookie("userEmail");
+            res['type_title'] = "2";
+            res['course_type'] = course_type_val;
+            alert("执行了吗");
+            $.ajax({
+                url:"/mulsubject",
+                data:res,
+                type:"POST",
+                success:function (res) {
+                    if (!res.flag){
+                        layer.alert("出错了");
+                    }
+                    else{
+                        layer.msg("添加成功");
+                        form.val("duo1", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+                            "title": "" // "name": "value"
+                            ,"score": "1"
+                            ,"diffcult": "简单"
+                            ,"choicea": ""
+                            ,"choiceb": ""
+                            ,"choicec": ""
+                            ,"choiced": ""
+                            ,"rightres": "A"
+                            ,"answer":""
+                        });
+                    }
+                }
+            })
+        })
+        //增加填空题
+        form.on('submit(tiankongti)',function (data) {
+            var res = data.field;
+            var type_val = $("#type").val();
+            var course_type_val = $("#coursetype").val();
+            res['pinKnowledge'] = type_val;
+            res['pinType'] = course_type_val;
+            res['pinOption'] = 1;
+            console.log(res);
+            $.ajax({
+                url:"/subjectpin",
+                data:res,
+                type:"POST",
+                sucess:function (res) {
+                    if (!res.flag){
+                        layer.alert("服务器错误");
+                    }
+                    else{
+                        layer.msg("添加成功");
+                        form.val("tian1", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+                            "pinName": "" // "name": "value"
+                            ,"pinScore": "1"
+                            ,"pinDiffcult": "简单"
+                            ,"pinAnswer": ""
+                            ,"pinAnly":""
+                        });
+                    }
+                }
+            })
+        })
+        //增加简答题
+        form.on('submit(jiandati)',function (data) {
+            var res = data.field;
+
+            var type_val = $("#type").val();
+            var course_type_val = $("#coursetype").val();
+            res['pinKnowledge'] = type_val;
+            res['pinType'] = course_type_val;
+            res['pinOption'] = 2;
+            console.log(res);
+            alert("我执行了吗");
+            $.ajax({
+                url:"/subjectpin",
+                data:res,
+                type:"POST",
+                sucess:function (res) {
+                    if (!res.flag){
+                        layer.alert("服务器错误");
+                    }
+                    else{
+                        layer.msg("添加成功");
+                        form.val("zhu1", { //formTest 即 class="layui-form" 所在元素属性 lay-filter="" 对应的值
+                            "title": "" // "name": "value"
+                            ,"pinScore": "1"
+                            ,"pinDiffcult": "简单"
+                            ,"pinAnswer": ""
+                            ,"pinAnly":""
+                        });
+                    }
+                }
+            })
+        })
+        rate.render({
+            elem: '#test9'
+            ,value: 4
+            ,readonly: true
+        });
+    });
+</script>
+</html>

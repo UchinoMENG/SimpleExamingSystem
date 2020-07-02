@@ -1,0 +1,35 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+.grid-demo{
+    padding: 10px;
+    line-height: 50px;
+    text-align: center;
+    color: rgb(15, 14, 14);
+    font-weight: 200;
+    font-size: large;
+    /* border: black solid 1px; */
+    background-color: white;
+}
+.grid-demo-bg1{
+    background-color: white;
+    margin-top: 10px;
+    margin-left: 10px;
+    padding: 28px;
+}
+.grid-demo-bg2{
+    background-color: white;
+    margin-top: 10px;
+    margin-left: 10px;
+}
+.grid-demo1{padding: 10px; line-height: 36px;   color: rgb(15, 14, 14);font-weight: 200;font-size: large;}
+
+#name{color: blue;font-size: 23px;font-weight: 200;}
+#achievement{color: blue;font-size: 23px;font-weight: 200;}
+
+.question_analysis{margin-top: 22px;}
+.layui-form-item .layui-input-block{
+    margin-left: 56px;
+
+}

@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>登录界面</title>
+    <script src="/static/jq/jquery-3.4.1.min (1).js"></script>
+    <script src="/static/jq/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="/static/layui/css/layui.css">
+    <script src="/static/layui/layui.js"></script>
+    <style>
+        .inputdiv{
+            display:flex;
+            border: 1px solid #D2D2D2!important;
+            background-color: #fff;
+            height: 38px;
+            line-height: 38px;
+            padding: 0px 40px;
+            border-radius: 19px;
+        }
+        .layui-input, .layui-select, .layui-textarea {
+            border-style: none;
+        }
+        .layui-form-item .layui-form-label{
+          color: #a19797;
+          font-weight: bold;
+        }
+       .layui-form-item .styleLabel{
+        background-color: #516ea3;
+        border-radius: 20px;
+        opacity: 0.8;
+        width: 66px;
+        text-align: center;
+       }
+        .img{
+            z-index: 999;
+            margin-left: 65px;
+        }
+    </style>
+</head>
+<body class="" style="background-image: url(/static/images/denglubeijing.png);" >
+    <div class="">
+        <div class="layui-container">  
+            <div class="layui-row" style="height: 200px;">
+                <div class="layui-col-md6 layui-col-md-offset3">
+                </div>
+            </div>
+            <div class="layui-row">
+                <div class="layui-col-md6 layui-col-md-offset3" style="padding-bottom: 20px;">
+                    <h1 style="color: #cacad2; text-align: center;font-weight: bold;letter-spacing: 37px;">在线考试系统</h1>
+                </div>
+            </div>
+            <div class="layui-row"> 
+              <div class="layui-col-md6 layui-col-md-offset3" style="padding: 20px;">
+                <form class="layui-form" action="">
+                    <div class="layui-form-item">
+                      <label class="layui-form-label styleLabel"> 用户名</label>
+                      <div class="layui-input-inline inputdiv" style="position: relative;">
+                        <i class="layui-icon layui-icon-username" style="position: absolute; left: 10px;font-size: 25px;"></i>  
+                        <input style="text-indent: 5px;" id="user" type="text" name="useremail" required  lay-verify="required" placeholder="请输入用户名" autocomplete="off" class="layui-input">
+                      </div>
+                    </div>
+                    <div class="layui-form-item">
+                      <label class="layui-form-label styleLabel">密码框</label>
+                      <div class="layui-input-inline inputdiv" style="position: relative;">
+                        <i class="layui-icon layui-icon-password" style="position: absolute; left: 10px;font-size: 25px;"></i>  
+                        <input style="text-indent: 5px;" id="password" type="password" name="password" required lay-verify="required" placeholder="请输入密码" autocomplete="off" class="layui-input">
+                      </div>
+                    </div>
+                    <div class="layui-form-item ">
+                      <label class="layui-form-label styleLabel">身份</label>
+                      <div class="layui-input-inline inputdiv">
+                        <select name="id" lay-verify="required">
+                          <option value=""></option>
+                          <option value="0">学生</option>
+                          <option value="1">老师</option>
+                          <option value="2">超级管理员</option>
+                        </select>
+                      </div>
+                    </div>
+                    <div class="layui-form-item" id="imgCode">
+                        <label class="layui-form-label styleLabel">验证码</label>
+                        <div class="layui-input-inline">
+                            <input class="inputdiv" type="text" placeholder="请输入验证码" autocomplete="off" id="code" name="code"  class="layui-input" lay-verify="required">
+                        </div>
+                        <img class="img" src="/user/getCode" onclick="this.src = this.src+'?'" >
+                    </div>
+                    <div class="layui-form-item">
+                      <label class="layui-form-label styleLabel">选项</label>
+                      <div class="layui-input-block" style="color: white;">
+                        <input type="radio" name="sex" value="password" title="记住密码">
+                        <input type="radio" name="sex" value="notpassword" title="不记住密码" checked>
+                      </div>
+                    </div>
+                    <div class="layui-form-item">
+                      <div class="layui-input-block">
+                        <button class="layui-btn" lay-submit lay-filter="formDemo" style="background-color: #2b477a;">立即提交</button>
+                        <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                      </div>
+                    </div>
+                  </form>
+              </div>
+            </div>    
+        </div>
+    </div>
+</body>
+<script>
+    layui.use('form', function(){
+        var form = layui.form;
+        form.on('submit(formDemo)', function(data){
+            var da = (data.field);
+            $.ajax({
+                url:"/login",
+                type:"post",
+                data:{
+                    "useremail":da['useremail'],
+                    "password":da['password'],
+                     "id":da['id'],
+                    "code":da['code']
+                },
+                success:function (res) {
+                    alert("运行了吗");
+                    if (res.flag){
+                        //设置cookie
+                        alert("登陆成功");
+                        console.log(res);
+                        var usertokencookie = res['map']['token'];
+                        console.log(da['id']);
+                        console.log(typeof da['id']);
+                        $.cookie("userEmail",da['useremail']);
+                        //设置token
+                        $.cookie("token", usertokencookie);
+                        if (da['id']=="0"){
+                            window.location.href="/static/html/学生端主页.html";
+                        }
+                        else if (da['id']=="1"){
+                            location.href="/static/html/老师端界面.html";
+                        }
+                        else if (da['id']=="2"){
+                            window.location.href="superadmin.html";
+                        }
+                }
+                    else{
+                        layer.msg(res.msg);
+                    }
+                },
+                error:function () {
+                    alert("执行失败");
+                }
+            })
+            return false;
+        });
+    });
+</script>
+</html>

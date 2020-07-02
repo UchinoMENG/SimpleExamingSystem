@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生错题界面</title>
+    <script src="../jq/jquery-3.4.1.min (1).js"></script>
+    <script src="../jq/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../layui/layui.js"></script>
+    <script src="https://cdn.staticfile.org/echarts/4.3.0/echarts.min.js"></script>
+    <link rel="stylesheet" href="../css/student_wrong_questions.css">
+</head>
+<body style="background-color: rgb(245, 247, 249);">
+<div  style="width: 100%;height: 62px;background-color: #363c40;">
+    <div class="layui-col-md10 layui-col-md-offset1">
+        <ul class="layui-nav" lay-filter="" style="background-color: #363c40;">
+            <li  class="layui-nav-item"><a href="" style="font-size:20px">在线考试系统</a></li>
+            <li class="layui-nav-item" style="float:right">
+                <a href="">我</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="personalHomepage (1).jsp">个人界面</a></dd>
+                    <dd><a href="login.html" onclick="exit()">退出</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item" style="float:right">
+                <a href="学生端主页.html">个人主页 |<span class="layui-badge-dot"></span></a>
+            </li>
+            <li class="layui-nav-item" style="float:right">
+                <a href="message.html"><i class="layui-icon layui-icon-email" style="font-size: 16px; color: #47a7ef;">消息 </i> <span class="layui-badge">1</span> |</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="layui-row">
+    <div class="layui-col-md3 layui-col-md-offset1 title-left">
+        <div class="grid-demo">
+            <!-- 姓名传入              -->
+            <div>你的姓名：<span id="username"></span></div>
+            <div>你的成绩：<span id="achievement"></span></div>
+        </div>
+    </div>
+    <div class="layui-col-md7">
+        <div class="grid-demo grid-demo-bg1 title-right">
+            <div>考生注意：<span>必须是独立完成</span></div>
+            <div>考试时间：<span>2021-3-2</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="layui-row">
+    <div class="layui-col-md3 layui-col-md-offset1">
+        <div class="grid-demo1">
+
+            <div class="fieldset">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 26px;">
+                    <legend>评级</legend>
+                </fieldset>
+            </div>
+            <!-- 对错信息            -->
+            <button type="button" class="layui-btn layui-btn-normal" onclick="classrank()">查看本班成绩表</button><br>
+            <button type="button" class="layui-btn layui-btn-normal"id="analysisResults" onclick="analysisResults()" style="margin-top:20px; margin-bottom: 20px ">查看成绩分析</button><br>
+            <div>单选题：</div>
+            <div class="rating" id="dan">
+
+            </div>
+            <div>多选题：</div>
+            <div class="rating" id="duo">
+
+            </div>
+            <div>填空题：</div>
+            <div class="rating" id="tian">
+
+            </div>
+            <div>主观题：</div>
+            <div class="rating" id="zhu">
+
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md7">
+        <div class="grid-demo-bg1">
+            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" style="padding: 10px;">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">单选题</li>
+                    <li>多选题</li>
+                    <li>填空题</li>
+                    <li>主观题</li>
+                </ul>
+                <!-- 添加题的结果 -->
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show" id="sum">
+                        <!--这里-->
+
+                    </div>
+                    <!-- 多选 -->
+                    <div class="layui-tab-item">
+                        <div class="layui-collapse" id="duosum">
+
+                        </div>
+                    </div>
+                    <!-- 填空题                 -->
+                    <div class="layui-tab-item">
+                        <div class="layui-collapse" id="tiansum">
+
+                        </div>
+                    </div>
+                    <!-- 主观题                 -->
+                    <div class="layui-tab-item">
+                        <div class="layui-collapse" id="zhusum">
+
+                            <!--<div class="layui-colla-item">-->
+                            <!--<h2 class="layui-colla-title">第二题</h2>-->
+                            <!--<div class="layui-colla-content">-->
+                            <!---->
+                            <!--<div><span>题目：</span><span>我在哪？</span></div>-->
+                            <!--<div><span>你的答案：</span><span class="layui-bg-blue">江湖夜雨十年灯</span></div>-->
+                            <!--<div><span>标准答案：</span><span  class="layui-bg-green">江湖夜雨十年灯</span></div>-->
+                            <!--</div>-->
+                            <!--</div>-->
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="layui-form" style="display: none;" id="grade_class_table">
+    <h4>班级：<span>3班</span></h4>
+    <table class="layui-table">
+        <colgroup>
+            <col width="150">
+            <col width="150">
+            <col width="200">
+            <col>
+        </colgroup>
+        <thead>
+        <tr>
+            <th>学号</th>
+            <th>姓名</th>
+            <th>成绩</th>
+            <th>排名</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>贤心</td>
+            <td>汉族</td>
+            <td>1989-10-14</td>
+            <td>人生似修行</td>
+
+        </tr>
+
+        <tr>
+            <td>Helen Keller</td>
+            <td>拉丁美裔</td>
+            <td>1880-06-27</td>
+            <td> Life is either a daring adventure or nothing.</td>
+
+        </tr>
+
+        <tr>
+            <td>孟子</td>
+            <td>华夏族（汉族）</td>
+            <td>公元前-372年</td>
+            <td>猿强，则国强。国强，则猿更强！ </td>
+
+        </tr>
+        </tbody>
+    </table>
+</div>
+<script src="../js/common.js"></script>
+</body>
+<script>
+    function exit() {
+        $.cookie('userEmail', '', { expires: -1 }); // 删除 cookie
+        $.cookie('token', '', { expires: -1 }); // 删除 cookie
+        $.cookie('examname', '', { expires: -1 }); // 删除 cookie
+    }
+</script>
+<script>
+    function analysisResults() {
+        layui.use('layer', function(){
+            var layer = layui.layer;
+            var anaResult=layer.open({
+                type: 1,
+                area: ['60%', '80%'],
+                content: '<div id="main" style="width: 600px;height:400px;margin: auto"></div>' //这里content是一个普通的String
+            });
+            AJAX.post1("/analyResults/stuAna",{},function (data) {
+                console.log(data);
+                if(data.flag){
+                    data2=data.map['stuAna'];
+                    var x=[];
+                    var y=[];
+                    for(var i=0;i<data2.length;i++){
+                        x.push(data2[i].historyExam);
+                        y.push(data2[i].score);
+                    }
+                   // $.getJSON('/static/jq/walden.project.json', function (themeJSON) {
+                       // echarts.registerTheme('wonderland', themeJSON);
+                        var myChart = echarts.init(document.getElementById('main'));
+                        // var myChart = echarts.init(document.getElementById('main'));
+                        var option = {
+                            title: {
+                                text: '成绩分析'
+                            },
+                            xAxis: {
+                                type: 'category',
+                                data: x
+                            },
+                            yAxis: {
+                                type: 'value'
+                            },
+                            series: [{
+                                data:y,
+                                type: 'line'
+                            }]
+                        };
+                        myChart.setOption(option);
+
+                }else{
+                    layer.msg(data.msg);
+                }
+
+            })
+
+        });
+
+    }
+
+    function classrank(){
+        window.open('http://localhost:8080/static/html/classRank.jsp?history_exam='+$.cookie("examName"));
+    }
+    $(document).ready(function () {
+
+            var data = {
+                useremail:$.cookie("userEmail")
+            }
+            AJAX.get1("/checkUser",data,function (res) {
+                // if (res.flag){
+                //     var obj = res['map']['obj'];
+                //     if (obj['userType']!=1){
+                //         alert("权限不足");
+                //         location.href = "login.html";
+                //     }
+                // }
+                // else {
+                alert("哈哈哈哈");
+                var passdata = {
+                    "useremail":$.cookie("userEmail"),
+                    "examname":$.cookie("examName")
+                }
+                AJAX.post("/lookSelfExam",passdata,function (map2) {
+                    //获取学生的考题情况
+                    console.log(map2);
+                    if (!map2.flag){
+                        alert("获取数据失败，服务器内部出错，请刷新一次");
+                    }
+                    else{
+                        console.log(map2);
+                        var map = map2['map']['obj'];
+                        $("#achievement").text(map.score);
+                        var dan = map.dan;
+                        alert(dan.length);
+                        var duo = map.duo;
+                        var tian = map.tian;
+                        var zhu = map.zhu;
+                        for (var i = 0;i<dan.length;i++){
+                            if(dan[i].rightscore==dan[i].score){
+                                $("#dan").append('<span class="layui-badge layui-bg-blue" style="margin-right: 9px;">√</span>');
+                            }else{
+                                $("#dan").append('<span class="layui-badge layui-bg-red " style="margin-right: 9px;">X</span>');
+                            }
+                            var options = (dan[i].options).split("@");
+                            console.log(options);
+                            var str = "";
+                            var rr = dan[i].rightAnswer;
+                            var temp = "A";
+                            var ch = "";
+                            for (var j = 0;j<options.length;j++){
+                                if (j ==1){
+                                    temp = "B";
+                                }
+                                else if (j ==2) {
+                                    temp="C";
+                                }
+                                else if (j  ==3){
+                                    temp="D";
+                                }
+                                if (temp ==rr ){
+                                    ch = "checked"
+                                }
+                                else{
+                                    ch = "disabled";
+                                }
+                                str+="<div class=\"choice_box\">"+
+                                    "       <input type=\"radio\" name=\"single_choice\" value=\"男\" title=\""+temp+".\""+ch+"><span class=\"choice_question\">"+options[j]+"</span><br>" +
+                                    "    </div>"
+                            }
+                            $("#sum").append("<div class=\"layui-collapse\">\n" +
+                                "                        <div class=\"layui-colla-item\">\n" +
+                                "                          <h2 class=\"layui-colla-title\">第 "+(i+1)+" 题:<span>"+" "+dan[i].title+"</span></h2>\n" +
+                                "                          <div class=\"layui-colla-content layui-show\">\n" +
+                                "                            \n" +
+                                "                              <form class=\"layui-form\" action=\"\">\n" +
+                                "                                <div class=\"layui-form-item\">\n" +
+                                "                                  \n" +
+                                "                                  <div class=\"layui-input-block\">\n" +
+                                "                                      "+str+
+                                "                                        <span>正确答案"+dan[i].rightAnswer +"</span>\n" +
+                                "                                        <p>解析："+dan[i].anly+"</p>\n" +
+                                "<p>你的答案是:"+dan[i].personal+"</p>"+
+                                "<p>此题满分为"+dan[i].rightscore+"</p>"+
+                                "<p>你的得分为"+dan[i].score+"</p>"+
+                                "                                  </div>\n" +
+                                "                                </div>\n" +
+                                "                                </form>\n" +
+                                "                          </div>\n" +
+                                "                        </div>\n" +
+                                "                  </div>")
+                        }
+                        for (var i = 0;i<duo.length;i++){
+                            if(duo[i].rightscore==duo[i].score){
+                                $("#duo").append('<span class="layui-badge layui-bg-blue" style="margin-right: 9px;" >√</span>');
+                            }else{
+                                $("#duo").append('<span class="layui-badge layui-bg-red " style="margin-right: 9px;">X</span>');
+                            }
+                            var options = (duo[i].options).split("@");
+                            console.log(options);
+                            var str = "";
+                            duo[i].rightAnswer+="@";
+                            duo[i].personal+="@@@"
+                            var rr = duo[i].rightAnswer.split("@");
+                            var ll = duo[i].personal.split("@");
+                            var temp = "A";
+                            var ch = "";
+                            var str = "";
+                            for (var j = 0;j<options.length;j++){
+                                if (j ==1){
+                                    temp = "B";
+                                }
+                                else if (j ==2) {
+                                    temp="C";
+                                }
+                                else if (j  ==3){
+                                    temp="D";
+                                }
+                                if (temp ==rr[0]||temp==rr[1]||temp==rr[2]||temp==rr[3] ){
+                                    ch = "checked"
+                                }
+                                else{
+                                    ch = "disabled";
+                                }
+                                str+="<div class=\"choice_box\">\n" +
+                                    "                                        <input type=\"checkbox\" name=\"multiple_choice\" value=\"男\" title=\""+temp+".\""+ch+"><span class=\"choice_question\">"+options[j]+"</span><br>\n" +
+                                    "                                  </div>"
+
+                            }
+                            $("#duosum").append( "<div class=\"layui-colla-item  layui-show\">\n" +
+                                "                          <h2 class=\"layui-colla-title\">第一题:<span>"+dan[i].title+"</span></h2>\n" +
+                                "                          <div class=\"layui-colla-content layui-show\">\n" +
+                                "                              <form class=\"layui-form\" action=\"\">\n" +
+                                "                                <div class=\"layui-form-item\">\n" +
+                                "                                  <div class=\"layui-input-block\">\n" +str+
+                                "                                        <span>正确答案"+rr[0]+rr[1]+rr[2]+rr[3] +"</span>\n" +
+                                "                                        <p>解析："+duo[i].anly+"</p>\n" +
+                                "<p>你的答案是:"+ll[0]+ll[1]+ll[2]+ll[3]+"</p>"+
+                                "<p>此题满分为"+duo[i].rightscore+"</p>"+
+                                "<p>你的得分为"+duo[i].score+"</p>"+
+                                "                                  </div>\n" +
+                                "                                </div>\n" +
+                                "                                </form>\n" +
+                                "                          </div>\n" +
+                                "                        </div>");
+                        }
+                        for (var i = 0;i<tian.length;i++){
+                            if(tian[i].rightscore==tian[i].score){
+                                $("#tian").append('<span class="layui-badge layui-bg-blue" style="margin-right: 9px;">√</span>');
+                            }else{
+                                $("#tian").append('<span class="layui-badge layui-bg-red " style="margin-right: 9px;">X</span>');
+                            }
+                            $("#tiansum").append( "<div class=\"layui-colla-item\">\n" +
+                                "                          <h2 class=\"layui-colla-title\">第"+(i+1)+"题</h2>\n" +
+                                "                          <div class=\"layui-colla-content\">\n" +
+                                "                            <div class=\"layui-colla-content layui-show\">\n" +
+                                "                                <div><span>题目：</span><span>"+tian[i].title+"</span></div>\n" +
+                                "                                <div><span>你的答案：</span><span class=\"layui-bg-blue\">"+tian[i].personal+"</span></div>\n" +
+                                "                                <div><span>你的得分为：</span><span  class=\"layui-bg-blue\">"+tian[i].score+"</span></div>\n" +
+                                "                                <div><span>正确答案：</span><span  class=\"layui-bg-green\">"+tian[i].anly+"</span></div>\n" +
+                                "                                <div><span>这道题满分为：</span><span  class=\"layui-bg-green\">"+tian[i].rightscore+"</span></div>\n" +
+                                "                          </div>\n" +
+                                "                          </div>\n" +
+                                "                        </div>");
+
+                        }
+                        for (var i = 0;i<zhu.length;i++){
+                            if(zhu[i].rightscore==zhu[i].score){
+                                $("#zhu").append('<span class="layui-badge layui-bg-blue" style="margin-right: 9px;">√</span>');
+                            }else{
+                                $("#zhu").append('<span class="layui-badge layui-bg-red " style="margin-right: 9px;">X</span>');
+                            }
+                            $("#zhusum").append( "<div class=\"layui-colla-item\">\n" +
+                                "                          <h2 class=\"layui-colla-title\">第"+(i+1)+"题</h2>\n" +
+                                "                          <div class=\"layui-colla-content\">\n" +
+                                "                            <div class=\"layui-colla-content layui-show\">\n" +
+                                "                                <div><span>题目：</span><span>"+zhu[i].title+"</span></div>\n" +
+                                "                                <div><span>你的答案：</span><span class=\"layui-bg-blue\">"+zhu[i].personal+"</span></div>\n" +
+                                "                                <div><span>你的得分为：</span><span  class=\"layui-bg-blue\">"+zhu[i].score+"</span></div>\n" +
+                                "                                <div><span>正确答案：</span><span  class=\"layui-bg-green\">"+zhu[i].anly+"</span></div>\n" +
+                                "                                <div><span>这道题满分为：</span><span  class=\"layui-bg-green\">"+zhu[i].rightscore+"</span></div>\n" +
+                                "                          </div>\n" +
+                                "                          </div>\n" +
+                                "                        </div>");
+
+                        }
+                    }
+                })
+                // }
+
+            })
+        }
+    )
+    //注意：导航 依赖 element 模块，否则无法进行功能性操作
+    layui.use(['rate','element','form'], function(){
+        var element = layui.element;
+        var rate = layui.rate;
+        var form = layui.form;
+        rate.render({
+            elem: '#test9'
+            ,value: 4
+            ,readonly: true
+        });
+        //…
+
+        $("#grade_class").on('click', function(data){
+            console.log(data.elem) //被执行事件的元素DOM对象，一般为button对象
+            console.log(data.form) //被执行提交的form对象，一般在存在form标签时才会返回
+            console.log(data.field) //当前容器的全部表单字段，名值对形式：{name: value}
+            var index=layer.open({
+                type: 1,
+                skin: 'layui-layer-rim', //加上边框
+                maxmin: true,
+                area: ['770px', '550px'], //宽高
+                content: $("#grade_class_table")
+            });
+            //layer.full(index);
+        });
+//nav导航栏
+        //修改信息
+        $(document).on('click','#modifyNav',function () {
+            alert($.cookie("userEmail"));
+            window.location.href="modify.html";
+        })
+        //个人中心
+        $(document).on('click','.personalHomepageNav',function () {
+            alert($.cookie("userEmail"));
+            window.location.href="personalHomepage (1).jsp";
+        })
+        //退出
+        $(document).on('click','#modifyNav',function () {
+            alert($.cookie("userEmail"));
+            $.cookie("userEmail", "",'/');
+            alert($.cookie("userEmail"));
+            window.location.href="login.html";
+        })
+        //错题分析
+        //上面已经存好了最近考试名
+        $(document).on('click','#studentWrongNav',function () {
+            alert($.cookie("examName"));
+            window.location.href="student_wrong_questions.html";
+        })
+    });
+</script>
+</html>

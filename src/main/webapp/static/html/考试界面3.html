@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>考试界面</title>
+    <script src="../jq/jquery-3.4.1.min (1).js"></script>
+    <script src="/static/jq/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="../layui/css/layui.mobile.css">
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <link rel="stylesheet" href="../css/examination_css.css">
+    <script src="../layui/layui.js"></script>
+    <script src="../js/common.js"></script>
+    <script src="../js/examing.js"></script>
+  <style>
+      .showdo{
+        display: flex;
+      }
+     .do{
+       display: block;
+       text-align: center;
+       width: 17px;
+       height: 18px;
+       line-height: 18px;
+       margin: 4px;
+       padding: 4px;
+       border-radius: 1px;
+       background-color: rgb(240,240,240);
+     }
+     .layui-form-item .fill{
+       width: auto;
+       font-size: 14px;
+       font-weight: inherit;
+       margin-right: 0;
+     }
+     .mybut{
+       display: block;
+       margin: auto;
+     }
+     .tianno{
+         margin-top: 5px;
+       display: block;
+       float: left;
+       height: 28px;
+       line-height: 28px;
+       margin-right: -12px;
+     }
+     .zhumo{
+       margin-bottom: 10px;
+     }
+     /* .undo{*/
+     /*   display: block;*/
+     /*   text-align: center;*/
+     /*   width: 17px;*/
+     /*   height: 18px;*/
+     /*   line-height: 18px;*/
+     /*   margin: 4px;*/
+     /*   padding: 4px;*/
+     /*   border-radius: 1px;*/
+     /*   background-color: rgb(240,240,240);*/
+     /* }*/
+    </style>
+</head>
+<body>
+  <!--        头部导航栏 -->
+  <ul class="layui-nav" lay-filter="top_nav" style="background-color: #363c40;">
+      <div class="layui-row">
+        <li class="layui-nav-item top_nav_title">考试中</li>
+        <li class="layui-nav-item" style="float:right">
+          <a href="">我</a>
+          <dl class="layui-nav-child">
+            <dd><a href="modify.html">修改信息</a></dd>
+            <dd><a href="../../../../../../../qq聊天记录/1723195367/FileRecv/personalHomepage.jsp">个人界面</a></dd>
+            <dd><a href="../../../../../../../qq聊天记录/1723195367/FileRecv/login.html">退出</a></dd>
+          </dl>
+        </li>
+      </div>
+  </ul>
+  <div class="layui-row main_top">
+    <div class="layui-col-md2">
+      <ul class="layui-nav layui-nav-tree left_nav" lay-filter="left_nav" style="height:100%">
+          <li class="layui-nav-item firstshow">
+              <a href="javascript:;"><i class="layui-icon layui-icon-username" style="font-size: 14px;"></i>题目集</a>
+          </li>
+          <li class="layui-nav-item">
+              <a href="javascript:;"><i class="layui-icon layui-icon-key" style="font-size: 14px;"></i>题目列表</a>
+          </li>
+          <li class="layui-nav-item">
+              <a href="javascript:;"><i class="layui-icon layui-icon-template-1" style="font-size: 14px;"></i>提交列表</a>
+          </li>
+          <li class="layui-nav-item">
+              <a href="javascript:;"><i class="layui-icon layui-icon-senior" style="font-size: 14px;"></i>排名</a>
+          </li>
+      </ul>
+    </div>
+    <div class="layui-card" style="width: 80%;margin-left: 13px;">
+      <div id="testName" class="layui-card-header">软件工程考试</div>
+      <div class="layui-card-body">
+        <div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">基本类型</label>
+            <div class="layui-form-mid layui-input-inline">闭卷考试</div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">开始时间</label>
+            <div id="starttime" class="layui-form-mid layui-input-inline">5/24 17：00</div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">结束时间</label>
+            <div id="endtime" class="layui-form-mid layui-input-inline">5/24 20：00</div>
+          </div>
+          <div class="layui-form-item">
+            <label class="layui-form-label">考试时长</label>
+            <div id="timesum" class="layui-form-mid layui-input-inline">90分钟</div>
+          </div>
+        </div>
+        <div>
+            <h1 style="height: 36px; text-align: center;">考试要求</h1>
+            <p style="height: 36px;">1.考生在每科开考前5-10分钟进入考场，并按规定位置就座，不得随意变动</p>
+            <p style="height: 36px;">2.考生进入考场只准带规定允许的文具，其他物品一律集中放在集中指定位置</p>
+            <p style="height: 36px;">3.特别强调：考生不得带通讯工具进入考场</p>
+            <p style="height: 36px;">4.不准夹带、偷看、抄袭或有意让他人抄袭，不准接传答案或者交换试卷</p>
+        </div>
+        
+      </div>
+  </div>
+    
+    <hr/>
+  </div>
+  <div class="layui-row">
+    <div class="layui-col-md2 answers">
+      <div class="cir">
+        <p>单选题答题情况</p>
+        <div id="dan" class="showdo">
+
+      </div>
+      </div>
+      <div class="cir">
+        <p>多选题答题情况</p>
+        <div id="duo" class="showdo">
+        </div>
+      </div>
+        <div class="cir">
+            <p>填空题答题情况</p>
+            <div id="tian" class="showdo">
+            </div>
+        </div>
+      <div class="cir">
+        <p>主观题答题情况</p>
+        <div id="zhu" class="showdo">
+        </div>
+      </div>
+<!--      <button type="button" lay-submit  lay-filter="Demo"  class="layui-btn layui-btn-normal mybut">交卷</button>-->
+    </div>
+    <div class="layui-col-md8" style="background-color: white;margin-left: 13px; width: 80%;">
+      <form class="layui-form">
+          <div class="layui-tab" lay-filter="makeQuestions">
+            <ul class="layui-tab-title">
+              <li class="layui-this" id="firstshow">单项选择题</li>
+              <li>多项选择题</li>
+              <li>填空题</li>
+              <li>主观题</li>
+            </ul>
+            <div class="layui-tab-content">
+              <div id="danxuanti" class="layui-tab-item layui-show">
+
+              </div>
+    <!--          多选-->
+              <div id="duoxuanti" class="layui-tab-item">
+              </div>
+    <!--          填空-->
+              <div id="tiankongti" class="layui-tab-item">
+              </div>
+    <!--          主观-->
+              <div id="zhuguanti" class="layui-tab-item">
+              </div>
+            </div>
+           </div>
+          <div class="layui-form-item">
+              <div class="layui-input-block">
+                  <button class="layui-btn" lay-submit lay-filter="formDemo" style="display: block;margin: auto;">立即提交</button>
+              </div>
+          </div>
+      </form>
+  </div>
+  </div>
+</body>
+<script>
+    function exit() {
+        $.cookie('userEmail', '', { expires: -1 }); // 删除 cookie
+        $.cookie('token', '', { expires: -1 }); // 删除 cookie
+        $.cookie("examName",'',{ expires: -1 });
+    }
+</script>
+
+<script>
+
+</script>
+</html>

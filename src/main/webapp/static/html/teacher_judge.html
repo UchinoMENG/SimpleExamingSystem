@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>老师判题</title>
+    <script src="../js/jquery-3.4.1.min.js" ></script>
+    <script src="/static/jq/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="../css/teacher_judge.css">
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../layui/layui.js"></script>
+</head>
+<body style="background-color:  rgb(245, 247, 249);">
+<div  style="width: 100%;height: 62px;background-color: #363c40;">
+    <div class="layui-col-md10 layui-col-md-offset1">
+        <ul class="layui-nav" lay-filter="" style="background-color: #363c40;">
+            <li  class="layui-nav-item"><a href="老师端界面.html" style="font-size:20px">在线考试系统</a></li>
+            <li class="layui-nav-item "><a href="test_paper2.html">出考卷</a></li>
+            <li class="layui-nav-item"><a href="insert_student.html">学生</a></li>
+            <li class="layui-nav-item"><a href="entry_questions.html">出题</a></li>
+            <li class="layui-nav-item" style="float:right">
+                <a href="personalHomepage.jsp">我</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="teacherPersonalHomepage.html">个人界面</a></dd>
+                    <dd><a href="login.html" onclick="exit()">退出</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item" style="float:right">
+                <a href="老师端界面.html">个人主页 |<span class="layui-badge-dot"></span></a>
+            </li>
+            <li class="layui-nav-item" style="float:right">
+                <a href="message.html"><i class="layui-icon layui-icon-email" style="font-size: 16px; color: #47a7ef;">消息 </i> <span class="layui-badge">1</span> |</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="layui-row">
+    <div class="layui-col-md3 layui-col-md-offset1 title-left">
+        <div class="grid-demo">
+            <!-- 姓名传入              -->
+            <div>所判试卷：<span id="examname"></span></div>
+            <div>你的邮箱：<span id="username"></span></div>
+        </div>
+    </div>
+    <div class="layui-col-md7">
+        <div class="grid-demo grid-demo-bg1 title-right">
+            <div>老师注意：<span>表明题目难度</span></div>
+            <div>出题建议：<span>高中低难度平均</span></div>
+        </div>
+    </div>
+</div>
+
+<div class="layui-row">
+    <div class="layui-col-md3 layui-col-md-offset1" style="background-color: white;height: 100%;">
+        <div class="grid-demo1">
+
+            <div class="fieldset">
+                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 26px;">
+                    <legend>判卷信息</legend>
+                </fieldset>
+            </div>
+            <!-- 对错信息            -->
+            <div class="r_w">
+<!--                <div id="test9"></div>-->
+                <div>总人数：<span id="all">5</span></div>
+                <div>已判人数：<span id="over">3</span></div>
+                <div>剩余人数：<span id="last">2</span></div>
+            </div>
+        </div>
+    </div>
+    <div class="layui-col-md7">
+        <div class="grid-demo-bg1" style="margin-top: -10px;">
+            <div class="layui-tab layui-tab-brief" lay-filter="docDemoTabBrief" style="padding: 10px;">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">主观题</li>
+                </ul>
+                <div class="layui-tab-content" >
+                    <!-- 主观题                 -->
+                    <div class="layui-tab-item  layui-show">
+                        <div class="layui-collapse" id="judgeScore">
+
+
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    function exit() {
+        $.cookie('userEmail', '', { expires: -1 }); // 删除 cookie
+        $.cookie('token', '', { expires: -1 }); // 删除 cookie
+        $.cookie("examName",'',{ expires: -1 });
+    }
+</script>
+
+<script>
+    let num=0;
+    var str=decodeURI(location.href);
+    var examname=str.split("?")[1].split("=")[1];
+    $("#examname").text(examname);
+    $("#username").text($.cookie("userEmail"));
+    $(document).ready(function () {
+
+        init();
+    })
+
+    var init=function() {
+        $.ajax({
+            url: "/showTeacherQuestion",
+            data: {
+                "examination_name": examname
+            },
+            type: "GET",
+            success: function (data) {
+                var data = JSON.parse(data);
+                console.log(data);
+                if (data.code === "000") {
+                    $("#judgeScore").empty();
+                    console.log(data);
+                    console.log(data["data"].length);
+                    //console.log(data["data"][0]["question_name"]);
+                    var a = data["data"].length;
+                    let i = 0;
+                    for (; i < a - 1; ++i) {
+                        //data=data["data"][i];
+                        $("#judgeScore").append(
+                            "<div class=\"layui-colla-item\">\n" +
+                            "<form class=\"layui-form\" action=\"\">" +
+                            "                            <h2 class=\"layui-colla-title\">第<span>" + (i + 1) + "</span>题 分值：<span>" + data["data"][i]["rightScore"] + "</span></h2>\n" +
+                            "                          <div class=\"layui-colla-content  layui-show\">\n" +
+                            "                          <div id='disID" + i + "'style='display:none'>" + data["data"][i]["id"] + "</div>\n" +
+                            "                            <div><span>知识点：</span><span>" + data["data"][i]["knowledge"] + "</span></div>\n" +
+                            "                            <div><span>题目：</span><span>" + data["data"][i]["question_name"] + "</span></div>\n" +
+                            "                            <div><span>标准答案：</span><span class=\"layui-bg-blue\">" + data["data"][i]["right_answer"] + "</span></div>\n" +
+                            "                            <div><span>学生答案：</span><span  class=\"layui-bg-green\">" + data["data"][i]["personal_answer"] + "</span></div>\n" +
+                            "                <div class=\" layui-input-inline\">\n" +
+                            "                    <input type=\"text\" name=\"score\" required  lay-verify=\"required\" placeholder=\"请输入分数\" autocomplete=\"off\" class=\"layui-input \">\n" +
+                            "                </div>\n" +
+                            "                <div class=\" layui-input-inline\"style='display: none'>\n" +
+                            "                    <input type=\"text\" name=\"riscore\" required  lay-verify=\"required\" value=\"" + data["data"][i]["rightScore"] + "\"placeholder=\"请输入分数\" autocomplete=\"off\" class=\"layui-input \">\n" +
+                            "                </div>\n" +
+                            "<button class=\"layui-btn layui-btn-radius layui-btn-sm layui-btn-normal\" lay-submit lay-filter=\"nextTopic" + i + "\"id=\"nextTopic" + i + "\">确定</button>" +
+                            "                            <div><span>分析：</span><span>" + data["data"][i]["analysis"] + "</span></div>\n" +
+                            "                          </div>\n" +
+                            "</form>" +
+                            "                        </div>"
+                        )
+                    }
+                    data = data["data"][i];
+                    num = i;
+                    $("#judgeScore").append(
+                        "<div class=\"layui-colla-item\">\n" +
+                        "<form class=\"layui-form\" action=\"\">" +
+                        "                            <h2 class=\"layui-colla-title\">第<span>" + (i + 1) + "</span>题 分值：<span>" + data["rightScore"] + "</span></h2>\n" +
+                        "                          <div class=\"layui-colla-content  layui-show\">\n" +
+                        "                          <div id='disID" + i + "'style='display:none'>" + data["id"] + "</div>\n" +
+                        "                          <div id='stuID'style='display:none'>" + data["stuId"] + "</div>\n" +
+                        "                            <div><span>知识点：</span><span>" + data["knowledge"] + "</span></div>\n" +
+                        "                            <div><span>题目：</span><span>" + data["question_name"] + "</span></div>\n" +
+                        "                            <div><span>标准答案：</span><span class=\"layui-bg-blue\">" + data["right_answer"] + "</span></div>\n" +
+                        "                            <div><span>学生答案：</span><span  class=\"layui-bg-green\">" + data["personal_answer"] + "</span></div>\n" +
+                        "                <div class=\" layui-input-inline\">\n" +
+                        "                    <input type=\"text\" name=\"score\" required  lay-verify=\"required\" placeholder=\"请输入分数\" autocomplete=\"off\" class=\"layui-input \">\n" +
+                        "                </div>\n" +
+                        "                <div class=\" layui-input-inline\"style='display: none'>\n" +
+                        "                    <input type=\"text\" name=\"riscore\" required  lay-verify=\"required\" value=\"" + data["rightScore"] + "\"placeholder=\"请输入分数\" autocomplete=\"off\" class=\"layui-input \">\n" +
+                        "                </div>\n" +
+                        "<button class=\"layui-btn layui-btn-radius layui-btn-sm layui-btn-normal\" lay-submit lay-filter=\"nextTopic" + i + "\"id=\"nextTopic" + i + "\">确定</button>" +
+                        "<button class=\"layui-btn layui-btn-radius layui-btn-sm layui-btn-normal\" lay-submit lay-filter=\"nextTopicx\"id=\"nextTopicx\">下份试卷</button>" +
+                        "                            <div><span>分析：</span><span>" + data["analysis"] + "</span></div>\n" +
+                        "                          </div>\n" +
+                        "</form>" +
+                        "                        </div>"
+                    )
+
+                    layui.use('element', function () {
+                        var element = layui.element;
+                        //一些事件监听
+                        element.init();
+                    });
+                } else if (data.code === "101") {
+                    $("#judgeScore").empty();
+                    $("#judgeScore").append(" <div style=\"height:228px;text-align: center;color:red;font-size: larger\">解脱了，卷子全盘完了！</div>\n" +
+                        "                      </div>")
+                }
+
+                layui.use('form', function () {
+                    var form = layui.form;
+                    //循环打分的确定按钮
+                    for (let k=0;k<=num;++k) {
+                        console.log(num);
+                        let str = "nextTopic" + k;
+                        let strid = "#disID" + k;
+                        console.log(str === "nextTopic0");
+                        //hhy NB
+                        form.on("submit("+str+")", function (data) {
+                            var data = data.field;
+                            console.log(data);
+                            var a = $(""+strid+"").html();
+                            var b = data["score"];
+                            console.log(typeof $(""+strid+"").html());
+                            console.log(typeof data["score"]);
+                            console.log(typeof data["riscore"]);
+                            if(parseInt(data["score"])>parseInt(data["riscore"])){
+                                alert("太高");
+                            }else {
+                                $.ajax({
+                                    url: "/giveScore",
+                                    data: {
+                                        "stuId": $(""+strid+"").html(),
+                                        "score": data["score"]
+                                    },
+                                    type: "GET",
+                                    success: function (res) {
+                                        console.log(res);
+                                        if (res.flag) {
+                                            alert("修改Score成功")
+                                        } else {
+                                            alert("修改失败")
+                                        }
+                                    }, error: function (res) {
+                                        alert("请求失败que");
+                                    }
+                                })
+                            }
+                            return false;
+                        })
+                    }
+                    form.on('submit(nextTopicx)', function (data) {
+                        var data = data.field;
+                        console.log(data);
+                        console.log($("#stuID").html());
+                        console.log(data["score"]);
+                        $.ajax({
+                            url: "/sumScore",
+                            data: {
+                                "stuId": $("#stuID").html(),
+                                "exam": examname
+                            },
+                            type: "GET",
+                            success: function (data) {
+                                console.log(data);
+                                if (data.flag) {
+                                    alert("判卷Score成功")
+                                    init();
+                                } else {
+                                    alert("全部完成判卷")
+                                }
+                            }, error: function (data) {
+                                alert("请求失败123");
+                            }
+                        })
+                        //form.render('submit');
+
+                        return false;
+                    })
+
+                })
+
+            }, error: function (data) {
+                alert("请求失败init");
+            }
+        })
+
+
+
+    }
+    //注意：导航 依赖 element 模块，否则无法进行功能性操作
+    layui.use(['rate','element','form','table'], function(){
+        var element = layui.element;
+        var rate = layui.rate;
+        var form = layui.form;
+        var table = layui.table;
+        rate.render({
+            elem: '#test9'
+            ,value: 4
+            ,readonly: true
+        });
+        //…
+
+    });
+</script>
+
+</body>
+
+</html>

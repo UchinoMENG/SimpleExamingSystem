@@ -1,0 +1,282 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+        <!--spring的配置文件-->
+    <context:component-scan base-package="cn.threeGroup">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+    <context:property-placeholder location="classpath:jdbc/db.properties"/>
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource">
+        <property name="url" value="${jdbc.url}"/>
+        <property name="driverClassName" value="${jdbc.driverclass}"/>
+        <property name="username" value="${jdbc.user}"/>
+        <property name="password" value="${jdbc.password}"/>
+    </bean>
+    <!--spring整合mybatis-->
+    <bean id="sessionFactoryBean" class="org.mybatis.spring.SqlSessionFactoryBean">
+        <property name="configLocation" value="classpath:mybatis/mybatis-mapper.xml"/>
+        <property name="dataSource" ref="dataSource"/>
+        <property name="mapperLocations" value="classpath:mybatis/mapper/*.xml"/>
+        <property name="plugins">
+            <set>
+                <bean class="com.github.pagehelper.PageInterceptor">
+                    <property name="properties">
+                        <props>
+                            <prop key="helperDialect">mysql</prop>
+                        </props>
+                    </property>
+                </bean>
+            </set>
+        </property>
+    </bean>
+    <!--配置扫描器，将mybatis的包下的类加入到ioc中-->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer" scope="prototype">
+        <property name="basePackage" value="cn.threeGroup.dao"/>
+    </bean>
+    <!--事务控制-->
+    <bean class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--为了自己的工具类，配置的jdbc Template-->
+    <bean id="jdbcTemplate" class="org.springframework.jdbc.core.JdbcTemplate">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+    <!--<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">-->
+        <!--<property name="securityManager" ref="securityManager" /> &lt;!&ndash;加载管理器&ndash;&gt;-->
+        <!--<property name="loginUrl" value="/login.jsp" />    &lt;!&ndash;没有登录的时候，跳转到这个页面，也就是requestMapping的映射路径&ndash;&gt;-->
+        <!--<property name="unauthorizedUrl" value="/nopermission.jsp" /> &lt;!&ndash;当没有权限的时候，跳转到这个url&ndash;&gt;-->
+        <!--<property name="filterChainDefinitions">-->
+            <!--<value>-->
+                <!--/index.jsp = authc-->
+                <!--/login.jsp = authc-->
+                <!--/** = anon &lt;!&ndash;可以不需要登录&ndash;&gt;-->
+                <!--&lt;!&ndash;/readName = authc, perms[/readName]  &lt;!&ndash; perms 表示需要该权限才能访问的页面 &ndash;&gt;&ndash;&gt;-->
+                <!--&lt;!&ndash;/readData = authc, perms[/readData]&ndash;&gt;-->
+                <!--&lt;!&ndash;/* = authc &lt;!&ndash; authc 表示需要认证才能访问的页面 &ndash;&gt;&ndash;&gt;-->
+            <!--</value>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--&lt;!&ndash; 自定义Realm &ndash;&gt;-->
+
+    <!--<bean id="myShiroRealm" class="cn.threeGroup.shiro.MyShiroReaml">-->
+        <!--&lt;!&ndash; businessManager 用来实现用户名密码的查询 &ndash;&gt;-->
+        <!--&lt;!&ndash;<property name="userService" ref="accountService"/>&ndash;&gt;-->
+    <!--</bean>-->
+
+    <!--<bean id="securityManager" class="org.apache.shiro.web.mgt.DefaultWebSecurityManager">-->
+        <!--<property name="realm" ref="myShiroRealm"/>-->
+    <!--</bean>-->
+    <!--声明一个Service 注入到自定义Realm-->
+    <!--<bean id="accountService" class="com.hui.service.UserServiceImpl"/>-->
+    <!--<bean id ="securityManager" class ="org.apache.shiro.web.mgt.DefaultWebSecurityManager">-->
+        <!--<property name="cacheManager" ref="cacheManager"/>-->
+        <!--&lt;!&ndash;<property name="sessionManager" ref="native"/>&ndash;&gt;-->
+        <!--<property name ="authenticator" ref ="authenticator"/>-->
+
+        <!--&lt;!&ndash;<property name="realms">&ndash;&gt;-->
+            <!--&lt;!&ndash;<list>&ndash;&gt;-->
+                <!--&lt;!&ndash;<ref bean="jdbcRealm"/>&ndash;&gt;-->
+                <!--&lt;!&ndash;<ref bean="secondRealm"/>&ndash;&gt;-->
+            <!--&lt;!&ndash;</list>&ndash;&gt;-->
+        <!--&lt;!&ndash;</property>&ndash;&gt;-->
+        <!--&lt;!&ndash;&lt;!&ndash;设置cookie存活时间（秒）&ndash;&gt;&ndash;&gt;-->
+        <!--&lt;!&ndash;<property name="rememberMeManager.cookie.maxAge" value="1000"/>&ndash;&gt;-->
+    <!--</bean>-->
+
+    <!--
+        2.配置CacheManager 缓存
+        2.1 需要加入 ehcache 的 jar 包及配置文件
+    -->
+    <!--<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">-->
+        <!--<property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/>-->
+    <!--</bean>-->
+    <!--
+        认证策略 AuthenticationStrategy接口的默认实现
+        FirstSuccessfulStrategy:只有一个 Realm 验证成功即可,且返回第一个 Realm 身份验证成功的认证信息,其它的忽略
+        AtLeastOneSuccessfulStrategy:只有一个 Realm 验证成功即可,和FirstSuccessfulStrategy不同,将返回所有 Realm 身份认证成功的认证信息
+        AllSuccessfulStrategy:所有Realm 验证成功才算成功,且返回所有Realm 身份验证成功的认证信息,如果有一个失败则失败
+    -->
+    <!--<bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">-->
+        <!--<property name="authenticationStrategy">-->
+            <!--<bean class="org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy"/>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--
+        3.配置 Realm
+        3.1 直接实现了Realm接口的bean
+    -->
+    <!--<bean id="jdbcRealm" class="com.wonders.realm.ShiroRealm">-->
+        <!--<property name="credentialsMatcher">-->
+            <!--<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">-->
+                <!--<property name="hashAlgorithmName" value="MD5"></property>-->
+                <!--<property name="hashIterations" value="1024"></property>-->
+            <!--</bean>-->
+        <!--</property>-->
+    <!--</bean>-->
+    <!--<bean id="secondRealm" class="com.wonders.realm.SecondRealm">-->
+        <!--<property name="credentialsMatcher">-->
+            <!--<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">-->
+                <!--<property name="hashAlgorithmName" value="SHA1"></property>-->
+                <!--<property name="hashIterations" value="1024"></property>-->
+            <!--</bean>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--
+        4.配置LifecycleBeanPostProcessor 可以自定的来调用配置在Spring IOC容器中 shiro bean 的生命周期方法
+    <!- -&ndash;&gt;-->
+    <!--<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>-->
+
+    <!--&lt;!&ndash;-->
+        <!--5.启用 IOC 容器中使用shiro 的注解,但必须在配置了lifecycleBeanPostProcessor之后才可以使用-->
+    <!--&ndash;&gt;-->
+    <!--<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"-->
+          <!--depends-on="lifecycleBeanPostProcessor"/>-->
+    <!--<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">-->
+        <!--<property name="securityManager" ref="securityManager"/>-->
+    <!--</bean>-->
+
+    <!--
+        6.配置ShiroFilter
+        6.1 id 必须和 web.xml 文件中配置的DelegatingFilterProxy 的 <filter-name>一致
+    -->
+    <!--<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">-->
+        <!--<property name="securityManager" ref="securityManager"/>-->
+        <!--<property name="loginUrl" value="/login.jsp"/>-->
+        <!--<property name="successUrl" value="/list.jsp"/>-->
+        <!--<property name="unauthorizedUrl" value="/unauthorized.jsp"/>-->
+
+        <!--&lt;!&ndash;<property name="filterChainDefinitionMap" ref="filterChainDefinitionMap"/>&ndash;&gt;-->
+
+        <!--&lt;!&ndash;-->
+            <!--配置那些页面需要收保护,以及访问这些页面需要的权限-->
+            <!--1. anon 可以被匿名访问-->
+            <!--2. authc 必须认证(即登陆)后才可以访问-->
+            <!--3.logout 登出-->
+            <!--4.roles 角色过滤器-->
+        <!--&ndash;&gt;-->
+        <!--&lt;!&ndash;<property name="filterChainDefinitions">&ndash;&gt;-->
+        <!--&lt;!&ndash;<value>&ndash;&gt;-->
+        <!--&lt;!&ndash;/login.jsp = anon&ndash;&gt;-->
+        <!--&lt;!&ndash;/shiro/login = anon&ndash;&gt;-->
+        <!--&lt;!&ndash;/shiro/logout = logout&ndash;&gt;-->
+
+        <!--&lt;!&ndash;/user.jsp = roles[user]&ndash;&gt;-->
+        <!--&lt;!&ndash;/admin.jsp = roles[admin]&ndash;&gt;-->
+
+        <!--&lt;!&ndash;/** = authc&ndash;&gt;-->
+        <!--&lt;!&ndash;</value>&ndash;&gt;-->
+        <!--&lt;!&ndash;</property>&ndash;&gt;-->
+    <!--</bean>-->
+
+    <!--配置一个bean,该bean 实际上是一个Map, 通过实例工厂方法的方式-->
+    <!--<bean id="filterChainDefinitionMap"-->
+          <!--factory-bean="filterChainDefinitionMapBuilder" factory-method="builFilterChainDefinitionMap"></bean>-->
+    <!--<bean id="filterChainDefinitionMapBuilder" class="com.wonders.factory.filterChainDefinitionMapBuilder"></bean>-->
+    <!--<bean id ="securityManager" class ="org.apache.shiro.web.mgt.DefaultWebSecurityManager">-->
+        <!--<property name="cacheManager" ref="cacheManager"/>-->
+        <!--&lt;!&ndash;<property name="sessionManager" ref="native"/>&ndash;&gt;-->
+        <!--<property name ="authenticator" ref ="authenticator"/>-->
+
+        <!--<property name="realms">-->
+            <!--<list>-->
+                <!--<ref bean="jdbcRealm"/>-->
+                <!--&lt;!&ndash;<ref bean="secondRealm"/>&ndash;&gt;-->
+            <!--</list>-->
+        <!--</property>-->
+        <!--&lt;!&ndash;设置cookie存活时间（秒）&ndash;&gt;-->
+        <!--&lt;!&ndash;<property name="rememberMeManager.cookie.maxAge" value="1000"/>&ndash;&gt;-->
+    <!--</bean>-->
+
+    <!--&lt;!&ndash;-->
+        <!--2.配置CacheManager 缓存-->
+        <!--2.1 需要加入 ehcache 的 jar 包及配置文件-->
+    <!--&ndash;&gt;-->
+    <!--<bean id="cacheManager" class="org.apache.shiro.cache.ehcache.EhCacheManager">-->
+        <!--<property name="cacheManagerConfigFile" value="classpath:ehcache.xml"/>-->
+    <!--</bean>-->
+    <!--&lt;!&ndash;-->
+        <!--认证策略 AuthenticationStrategy接口的默认实现-->
+        <!--FirstSuccessfulStrategy:只有一个 Realm 验证成功即可,且返回第一个 Realm 身份验证成功的认证信息,其它的忽略-->
+        <!--AtLeastOneSuccessfulStrategy:只有一个 Realm 验证成功即可,和FirstSuccessfulStrategy不同,将返回所有 Realm 身份认证成功的认证信息-->
+        <!--AllSuccessfulStrategy:所有Realm 验证成功才算成功,且返回所有Realm 身份验证成功的认证信息,如果有一个失败则失败-->
+    <!--&ndash;&gt;-->
+    <!--<bean id="authenticator" class="org.apache.shiro.authc.pam.ModularRealmAuthenticator">-->
+        <!--<property name="authenticationStrategy">-->
+            <!--<bean class="org.apache.shiro.authc.pam.AtLeastOneSuccessfulStrategy"/>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+    <!--&lt;!&ndash;-->
+        <!--3.配置 Realm-->
+        <!--3.1 直接实现了Realm接口的bean-->
+    <!--&ndash;&gt;-->
+    <!--<bean id="jdbcRealm" class=" cn.threeGroup.shiro.MyShiroReaml">-->
+        <!--&lt;!&ndash;<property name="credentialsMatcher">&ndash;&gt;-->
+        <!--&lt;!&ndash;<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">&ndash;&gt;-->
+        <!--&lt;!&ndash;<property name="hashAlgorithmName" value="MD5"></property>&ndash;&gt;-->
+        <!--&lt;!&ndash;<property name="hashIterations" value="1024"></property>&ndash;&gt;-->
+        <!--&lt;!&ndash;</bean>&ndash;&gt;-->
+        <!--&lt;!&ndash;</property>&ndash;&gt;-->
+    <!--</bean>-->
+    <!--&lt;!&ndash;<bean id="secondRealm" class="com.wonders.realm.SecondRealm">&ndash;&gt;-->
+    <!--&lt;!&ndash;<property name="credentialsMatcher">&ndash;&gt;-->
+    <!--&lt;!&ndash;<bean class="org.apache.shiro.authc.credential.HashedCredentialsMatcher">&ndash;&gt;-->
+    <!--&lt;!&ndash;<property name="hashAlgorithmName" value="SHA1"></property>&ndash;&gt;-->
+    <!--&lt;!&ndash;<property name="hashIterations" value="1024"></property>&ndash;&gt;-->
+    <!--&lt;!&ndash;</bean>&ndash;&gt;-->
+    <!--&lt;!&ndash;</property>&ndash;&gt;-->
+    <!--&lt;!&ndash;</bean>&ndash;&gt;-->
+
+    <!--&lt;!&ndash;-->
+        <!--4.配置LifecycleBeanPostProcessor 可以自定的来调用配置在Spring IOC容器中 shiro bean 的生命周期方法-->
+    <!--&ndash;&gt;-->
+    <!--<bean id="lifecycleBeanPostProcessor" class="org.apache.shiro.spring.LifecycleBeanPostProcessor"/>-->
+
+    <!--&lt;!&ndash;-->
+        <!--5.启用 IOC 容器中使用shiro 的注解,但必须在配置了lifecycleBeanPostProcessor之后才可以使用-->
+    <!--&ndash;&gt;-->
+    <!--<bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"-->
+          <!--depends-on="lifecycleBeanPostProcessor"/>-->
+    <!--<bean class="org.apache.shiro.spring.security.interceptor.AuthorizationAttributeSourceAdvisor">-->
+        <!--<property name="securityManager" ref="securityManager"/>-->
+    <!--</bean>-->
+
+    <!--&lt;!&ndash;-->
+        <!--6.配置ShiroFilter-->
+        <!--6.1 id 必须和 web.xml 文件中配置的DelegatingFilterProxy 的 <filter-name>一致-->
+    <!--&ndash;&gt;-->
+    <!--<bean id="shiroFilter" class="org.apache.shiro.spring.web.ShiroFilterFactoryBean">-->
+        <!--<property name="securityManager" ref="securityManager"/>-->
+        <!--<property name="loginUrl" value="/login.jsp"/>-->
+        <!--<property name="successUrl" value="/list.jsp"/>-->
+        <!--<property name="unauthorizedUrl" value="/unauthorized.jsp"/>-->
+
+        <!--&lt;!&ndash;<property name="filterChainDefinitionMap" ref="filterChainDefinitionMap"/>&ndash;&gt;-->
+
+        <!--&lt;!&ndash;-->
+            <!--配置那些页面需要收保护,以及访问这些页面需要的权限-->
+            <!--1. anon 可以被匿名访问-->
+            <!--2. authc 必须认证(即登陆)后才可以访问-->
+            <!--3.logout 登出-->
+            <!--4.roles 角色过滤器-->
+        <!--&ndash;&gt;-->
+        <!--<property name="filterChainDefinitions">-->
+            <!--<value>-->
+                <!--&lt;!&ndash;/index.jsp = anon&ndash;&gt;-->
+                <!--/login.jsp = anon-->
+                <!--/index.jsp = authc-->
+                <!--&lt;!&ndash;/shiro/login = anon&ndash;&gt;-->
+                <!--&lt;!&ndash;/shiro/logout = logout&ndash;&gt;-->
+                <!--&lt;!&ndash;/user.jsp = roles[user]&ndash;&gt;-->
+                <!--&lt;!&ndash;/admin.jsp = roles[admin]&ndash;&gt;-->
+                <!--/** = authc-->
+            <!--</value>-->
+        <!--</property>-->
+    <!--</bean>-->
+
+</beans>

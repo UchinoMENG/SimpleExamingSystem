@@ -1,0 +1,211 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="cn.threeGroup.dao.BindInfoMapper">
+  <resultMap id="BaseResultMap" type="cn.threeGroup.domain.BindInfo">
+    <id column="useremail" jdbcType="VARCHAR" property="useremail" />
+    <result column="userid" jdbcType="VARCHAR" property="userid" />
+    <result column="margin" jdbcType="VARCHAR" property="margin" />
+    <result column="userclass" jdbcType="VARCHAR" property="userclass" />
+    <result column="userschool" jdbcType="VARCHAR" property="userschool" />
+  </resultMap>
+  <sql id="Example_Where_Clause">
+    <where>
+      <foreach collection="oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause">
+    <where>
+      <foreach collection="example.oredCriteria" item="criteria" separator="or">
+        <if test="criteria.valid">
+          <trim prefix="(" prefixOverrides="and" suffix=")">
+            <foreach collection="criteria.criteria" item="criterion">
+              <choose>
+                <when test="criterion.noValue">
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue">
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue">
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue">
+                  and ${criterion.condition}
+                  <foreach close=")" collection="criterion.value" item="listItem" open="(" separator=",">
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List">
+    useremail, userid, margin, userclass, userschool
+  </sql>
+  <select id="selectByExample" parameterType="cn.threeGroup.domain.BindInfoExample" resultMap="BaseResultMap">
+    select
+    <if test="distinct">
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from bindinfo
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null">
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" parameterType="java.lang.String" resultMap="BaseResultMap">
+    select 
+    <include refid="Base_Column_List" />
+    from bindinfo
+    where useremail = #{useremail,jdbcType=VARCHAR}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.String">
+    delete from bindinfo
+    where useremail = #{useremail,jdbcType=VARCHAR}
+  </delete>
+  <delete id="deleteByExample" parameterType="cn.threeGroup.domain.BindInfoExample">
+    delete from bindinfo
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="cn.threeGroup.domain.BindInfo">
+    insert into bindinfo (useremail, userid, margin, 
+      userclass, userschool)
+    values (#{useremail,jdbcType=VARCHAR}, #{userid,jdbcType=VARCHAR}, #{margin,jdbcType=VARCHAR}, 
+      #{userclass,jdbcType=VARCHAR}, #{userschool,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.threeGroup.domain.BindInfo">
+    insert into bindinfo
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="useremail != null">
+        useremail,
+      </if>
+      <if test="userid != null">
+        userid,
+      </if>
+      <if test="margin != null">
+        margin,
+      </if>
+      <if test="userclass != null">
+        userclass,
+      </if>
+      <if test="userschool != null">
+        userschool,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="useremail != null">
+        #{useremail,jdbcType=VARCHAR},
+      </if>
+      <if test="userid != null">
+        #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="margin != null">
+        #{margin,jdbcType=VARCHAR},
+      </if>
+      <if test="userclass != null">
+        #{userclass,jdbcType=VARCHAR},
+      </if>
+      <if test="userschool != null">
+        #{userschool,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="cn.threeGroup.domain.BindInfoExample" resultType="java.lang.Long">
+    select count(*) from bindinfo
+    <if test="_parameter != null">
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map">
+    update bindinfo
+    <set>
+      <if test="record.useremail != null">
+        useremail = #{record.useremail,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userid != null">
+        userid = #{record.userid,jdbcType=VARCHAR},
+      </if>
+      <if test="record.margin != null">
+        margin = #{record.margin,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userclass != null">
+        userclass = #{record.userclass,jdbcType=VARCHAR},
+      </if>
+      <if test="record.userschool != null">
+        userschool = #{record.userschool,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map">
+    update bindinfo
+    set useremail = #{record.useremail,jdbcType=VARCHAR},
+      userid = #{record.userid,jdbcType=VARCHAR},
+      margin = #{record.margin,jdbcType=VARCHAR},
+      userclass = #{record.userclass,jdbcType=VARCHAR},
+      userschool = #{record.userschool,jdbcType=VARCHAR}
+    <if test="_parameter != null">
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.threeGroup.domain.BindInfo">
+    update bindinfo
+    <set>
+      <if test="userid != null">
+        userid = #{userid,jdbcType=VARCHAR},
+      </if>
+      <if test="margin != null">
+        margin = #{margin,jdbcType=VARCHAR},
+      </if>
+      <if test="userclass != null">
+        userclass = #{userclass,jdbcType=VARCHAR},
+      </if>
+      <if test="userschool != null">
+        userschool = #{userschool,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where useremail = #{useremail,jdbcType=VARCHAR}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.threeGroup.domain.BindInfo">
+    update bindinfo
+    set userid = #{userid,jdbcType=VARCHAR},
+      margin = #{margin,jdbcType=VARCHAR},
+      userclass = #{userclass,jdbcType=VARCHAR},
+      userschool = #{userschool,jdbcType=VARCHAR}
+    where useremail = #{useremail,jdbcType=VARCHAR}
+  </update>
+</mapper>

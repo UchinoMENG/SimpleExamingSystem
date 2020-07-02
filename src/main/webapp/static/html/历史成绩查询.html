@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>历史试卷查询</title>
+    <script src="../jq/jquery-3.4.1.min (1).js"></script>
+    <script src="../jq/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../layui/layui.js"></script>
+    <style> 
+        .info{
+            height: 150px;
+            width: 300px;
+        }  
+    </style>
+</head>
+<body style="background-color:  rgb(245, 247, 249);">
+<div  style="width: 100%;height: 62px;background-color: #363c40;">
+    <div class="layui-col-md10 layui-col-md-offset1">
+        <ul class="layui-nav" lay-filter="" style="background-color: #363c40;">
+            <li  class="layui-nav-item"><a href="" style="font-size:20px">在线考试系统</a></li>
+            <li class="layui-nav-item"><a href="历史成绩查询.html">历史成绩查询</a></li>
+            <li class="layui-nav-item layui-this"><a href="classRank.jsp">班级成绩查询</a></li>
+<!--            <li class="layui-nav-item"><a id="studentWrongNav">错题分析</a></li>-->
+            <li class="layui-nav-item">
+                <a >年级排名</a>
+            </li>
+            <li class="layui-nav-item"><a href="historyTest.jsp">历史试卷查询</a></li>
+            <li class="layui-nav-item" style="float:right">
+                <a>我</a>
+                <dl class="layui-nav-child">
+                    <dd><a id="modifyNav">修改信息</a></dd>
+                    <dd><a class="personalHomepageNav">个人界面</a></dd>
+                    <dd><a id="loginNav">退出</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item" style="float:right">
+                <a class="personalHomepageNav">个人中心 |<span class="layui-badge-dot"></span></a>
+            </li>
+            <li class="layui-nav-item" style="float:right">
+                <a href="message.html"><i class="layui-icon layui-icon-email" style="font-size: 16px; color: #47a7ef;">消息 </i> <span class="layui-badge">1</span> |</a>
+            </li>
+        </ul>
+    </div>
+</div>
+    <div class="content">
+      <div class="layui-col-md8 layui-col-md-offset2">
+            
+        </div>
+    </div>
+</body>
+<script>
+    //注意：导航 依赖 element 模块，否则无法进行功能性操作
+    layui.use('element', function(){
+      var element = layui.element;
+        //nav导航栏
+        //修改信息
+        $(document).on('click','#modifyNav',function () {
+            alert($.cookie("useremail"));
+            window.location.href="modify.html";
+        })
+        //个人中心
+        $(document).on('click','.personalHomepageNav',function () {
+            alert($.cookie("useremail"));
+            window.location.href="personalHomepage (1).jsp";
+        })
+        //退出
+        $(document).on('click','#modifyNav',function () {
+            alert($.cookie("useremail"));
+            $.cookie("useremail", "",'/');
+            alert($.cookie("useremail"));
+            window.location.href="login.html";
+        })
+        //错题分析
+        //上面已经存好了最近考试名
+        $(document).on('click','#studentWrongNav',function () {
+            alert($.cookie("examName"));
+            window.location.href="student_wrong_questions.html";
+        })
+      //…
+    });
+    </script>
+</html>

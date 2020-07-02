@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>出试卷</title>
+    <script src="../js/jquery-3.4.1.min.js" ></script>
+    <link rel="stylesheet" href="../css/test_paper.css">
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../layui/layui.js"></script>
+    <script src="../jq/jquery.cookie.js"></script>
+    <script src="../js/common.js"></script>
+    <style>
+        #composition .layui-input-block .layui-input-inline{
+            width: 100px;
+        }
+        .layui-table-cell {
+            height:auto; overflow:visible; text-overflow:inherit; white-space:normal;
+        }
+    </style>
+</head>
+<body style="background-color:  rgb(245, 247, 249);">
+<div  style="width: 100%;height: 62px;background-color: #363c40;">
+    <div class="layui-col-md10 layui-col-md-offset1">
+        <ul class="layui-nav" lay-filter="" style="background-color: #363c40;">
+            <li  class="layui-nav-item"><a href="老师端界面.html" style="font-size:20px">在线考试系统</a></li>
+            <li class="layui-nav-item layui-this"><a href="test_paper2.html">出考卷</a></li>
+            <li class="layui-nav-item "><a href="insert_student.html">学生</a></li>
+            <li class="layui-nav-item"><a href="entry_questions.html">出题</a></li>
+            <li class="layui-nav-item" style="float:right">
+                <a href="personalHomepage.jsp">我</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="teacherPersonalHomepage.html">个人界面</a></dd>
+                    <dd><a href="login.html" onclick="exit()">退出</a></dd>
+                </dl>
+            </li>
+            <li class="layui-nav-item" style="float:right">
+                <a href="老师端界面.html">个人主页 |<span class="layui-badge-dot"></span></a>
+            </li>
+            <li class="layui-nav-item" style="float:right">
+                <a href="message.html"><i class="layui-icon layui-icon-email" style="font-size: 16px; color: #47a7ef;">消息 </i> <span class="layui-badge">1</span> |</a>
+            </li>
+        </ul>
+    </div>
+</div>
+<div class="layui-row">
+    <div class="layui-col-md10 layui-col-md-offset1">
+        <div class="grid-demo grid-demo-bg1">
+            <div class="layui-tab">
+                <ul class="layui-tab-title">
+                    <li class="layui-this">题库随机出题</li>
+                    <li>教师自己勾选</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show" style=" text-align:  center;">
+                        <form class="layui-form" action="get" lay-filter="randomIssue">
+                            <!-- 选择科目                      -->
+                            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                                <legend>选择试卷基本信息</legend>
+                            </fieldset>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">请输入试卷的名字</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="random_title" required  lay-verify="required" placeholder="请输入试卷的名字" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item lay-search" >
+                                <label class="layui-form-label">选择科目:</label>
+                                <div class="layui-input-block">
+                                    <select id="subject" name="subject" lay-verify="required">
+                                        <!--这里进行数据库查询-->
+                                        <!--<option value=""></option>-->
+                                        <!--<option value="语文">语文</option>-->
+                                        <!--<option value="1">。。</option>-->
+                                        <!--<option value="2">广州</option>-->
+                                        <!--<option value="3">深圳</option>-->
+                                        <!--<option value="4">杭州</option>-->
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- 题目组成                          -->
+                            <div class="layui-form-item" pane="" id="composition">
+                                <label class="layui-form-label">题目组成:</label>
+                                <div class="layui-input-block">
+                                    <div class=" layui-input-inline "style=" width:90px;    margin-top: -6px;">
+                                        <input name="random_dan" title="单选" type="checkbox"checked>
+                                    </div>
+                                    <div class=" layui-input-inline " style="    width: 100px;">
+                                        <input type="number" name="random_dan_num" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;" placeholder="请输入题目数量"/>
+                                    </div>
+                                    <div class="layui-form-mid">总分数</div>
+                                    <div class=" layui-input-inline ">
+                                        <input name="random_dan_sum" type="number" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;" placeholder="请输入题目总的分数"/>
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux" >难度选择</div>
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <label class="layui-form-label" style="width: auto;">困难</label>
+                                        <input name="randomDanDifficultNum" type="number" value="0" min="0" max="100" step="1" class="layui-input" style="width: auto;"/>
+                                    </div>
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <label class="layui-form-label" style="width: auto;">中等</label>
+                                        <input name="randomDanMiddleNum" type="number" value="0" min="0" max="100" step="1" class="layui-input" style="width: auto;"/>
+                                    </div>
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <label class="layui-form-label" style="width: auto;">简单</label>
+                                        <input name="randomDanSimpleNum" type="number" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;"/>
+                                    </div>
+                                    <hr/>
+                                    <div class=" layui-input-inline "style=" width:90px;    margin-top: -6px;">
+                                        <input name="random_duo" title="多选" type="checkbox"checked>
+                                    </div>
+                                    <div class=" layui-input-inline ">
+                                        <input name="random_duo_num"  type="number" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;" placeholder="请输入题目数量"/>
+                                    </div>
+                                    <div class="layui-form-mid">总分数</div>
+                                    <div class=" layui-input-inline ">
+                                        <input name="random_duo_sum" type="number" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;" placeholder="请输入题目总的分数"/>
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux" >难度选择</div>
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <label class="layui-form-label" style="width: auto;">困难</label>
+                                        <input name="randomDuoDifficultNum" type="number" value="0" min="0" max="100" step="1" class="layui-input" style="width: auto;"/>
+                                    </div>
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <label class="layui-form-label" style="width: auto;">中等</label>
+                                        <input name="randomDuoMiddleNum" type="number" value="0" min="0" max="100" step="1" class="layui-input" style="width: auto;"/>
+                                    </div>
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <label class="layui-form-label" style="width: auto;">简单</label>
+                                        <input name="randomDuoSimpleNum" type="number" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;"/>
+                                    </div>
+                                    <hr/>
+                                    <div class=" layui-input-inline" style=" width:90px;    margin-top: -6px;">
+                                        <input name="random_tian" title="填空" type="checkbox" checked>
+                                    </div>
+                                    <div class=" layui-input-inline">
+                                        <input name="random_tian_num" type="number" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;" placeholder="请输入题目数量"/>
+                                    </div>
+                                    <div class="layui-form-mid">总分数</div>
+                                    <div class=" layui-input-inline ">
+                                        <input name="random_tian_sum" type="number" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;" placeholder="请输入题目总的分数"/>
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux" >难度选择</div>
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <label class="layui-form-label" style="width: auto;">困难</label>
+                                        <input name="randomTianDifficultNum" type="number" value="0" min="0" max="100" step="1" class="layui-input" style="width: auto;"/>
+                                    </div>
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <label class="layui-form-label" style="width: auto;">中等</label>
+                                        <input name="randomTianMiddleNum" type="number" value="0" min="0" max="100" step="1" class="layui-input" style="width: auto;"/>
+                                    </div>
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <label class="layui-form-label" style="width: auto;">简单</label>
+                                        <input name="randomTianSimpleNum" type="number" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;"/>
+                                    </div>
+                                    <hr/>
+
+                                    <div class=" layui-input-inline" style=" width:90px;    margin-top: -6px;">
+                                        <input name="random_zhu" title="主观" type="checkbox" checked>
+                                    </div>
+                                    <div class=" layui-input-inline">
+                                        <input name="random_zhu_num" type="number" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;" placeholder="请输入题目数量"/>
+                                    </div>
+
+                                    <div class="layui-form-mid">总分数</div>
+                                    <div class=" layui-input-inline ">
+                                        <input name="random_zhu_sum" type="number" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;" placeholder="请输入题目总的分数"/>
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux" >难度选择</div>
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <label class="layui-form-label" style="width: auto;">困难</label>
+                                        <input name="randomZhuDifficultNum" type="number" value="0" min="0" max="100" step="1" class="layui-input" style="width: auto;"/>
+                                    </div>
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <label class="layui-form-label" style="width: auto;">中等</label>
+                                        <input name="randomZhuMiddleNum" type="number" value="0" min="0" max="100" step="1" class="layui-input" style="width: auto;"/>
+                                    </div>
+                                    <div class="layui-input-inline" style="width: auto;">
+                                        <label class="layui-form-label" style="width: auto;">简单</label>
+                                        <input name="randomZhuSimpleNum" type="number" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;"/>
+                                    </div>
+                                    <hr/>
+                                </div>
+                                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                                    <legend>发布时间</legend>
+                                </fieldset>
+                                <div class="layui-form-item" style="display: flex;justify-content: center">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label" style="width: auto;">请选择发布日期</label>
+                                        <div class="layui-input-inline">
+                                            <input name="startTime" required class="layui-input" id="releaseDate" type="text">
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label" style="width: auto;">请输入考试时间</label>
+                                        <div class="layui-input-inline" style="width: auto">
+                                            <input name="examTime" required type="number" value="90" min="0" max="300" step="5" class="layui-input" style="width: auto;"/>
+                                        </div>
+                                        <div class="layui-form-mid layui-word-aux">分钟</div>
+                                    </div>
+                                </div>
+                                <!--                                发布年级班级-->
+                                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                                    <legend>发布年级，班级</legend>
+                                </fieldset>
+                                <div class="layui-form-item" style="display: flex;justify-content: center">
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label" style="width: auto;">请选择发布年级</label>
+                                        <div class="layui-input-inline">
+                                            <select id="gradeName" name="gradeName" lay-filter="grade" lay-verify="required">
+                                                <!--这里进行数据查询-->
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="layui-inline">
+                                        <label class="layui-form-label" style="width: auto;">请输入发布班级</label>
+                                        <div class="layui-input-inline" style="width: auto">
+                                            <select id="className" name="className" lay-verify="required">
+                                                <!--数据库查询-->
+                                                <!--<option value=""></option>-->
+                                                <!--<option value="0">1班</option>-->
+                                                <!--<option value="1">2班</option>-->
+                                                <!--<option value="2">3班</option>-->
+                                                <!--<option value="3">4班</option>-->
+                                                <!--<option value="4">5班</option>-->
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" lay-submit lay-filter="randomExam" class="layui-btn layui-input-inline  layui-btn-radius layui-btn-normal" style="float: none;">&nbsp&nbsp&nbsp确定并发布考试&nbsp&nbsp&nbsp</button><br>
+                            </div>
+                        </form>
+                    </div>
+                    <!--                        教师自己出题-->
+                    <div class="layui-tab-item">
+                        <form class="layui-form" action="get" lay-filter="randomIssue">
+                            <!-- 选择科目                      -->
+                            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                                <legend>选择试卷基本信息</legend>
+                            </fieldset>
+                            <div class="layui-form-item">
+                                <label class="layui-form-label">请输入试卷的名字</label>
+                                <div class="layui-input-block">
+                                    <input type="text" name="examName" required  lay-verify="required" placeholder="请输入试卷的名字" autocomplete="off" class="layui-input">
+                                </div>
+                            </div>
+                            <div class="layui-form-item lay-search" >
+                                <label class="layui-form-label">选择科目:</label>
+                                <div class="layui-input-block">
+                                    <select id="subjectname" name="subjectname" lay-verify="required">
+                                        <!--<option value=""></option>-->
+                                        <!--<option value="语文">语文</option>-->
+                                        <!--<option value="1">。。</option>-->
+                                        <!--<option value="2">广州</option>-->
+                                        <!--<option value="3">深圳</option>-->
+                                        <!--<option value="4">杭州</option>-->
+                                    </select>
+                                </div>
+                            </div>
+                            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                                <legend>题目组成</legend>
+                            </fieldset>
+                            <div class="layui-form-item" pane="">
+                                    <div class="layui-collapse">
+                                        <div class="layui-colla-item">
+                                            <div class="layui-form-mid">单选题分数: </div>
+                                            <div class=" layui-input-block " style="margin-left:auto ">
+                                                <input name="danzhi" type="number" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;margin-right: 15px; display: inline" placeholder="请输入题目总的分数"/>
+                                                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm">保存</button>
+                                            </div>
+                                            <h2 class="layui-colla-title">单选</h2>
+                                            <div class="layui-colla-content layui-show">
+                                                <table class="layui-hide" id="dan" lay-filter="dan"></table>
+                                            </div>
+                                        </div>
+
+                                        <div class="layui-colla-item">
+                                            <div class="layui-form-mid">多选题分数: </div>
+                                            <div class=" layui-input-block " style="margin-left:auto ">
+                                                <input name="duozhi" type="number" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;margin-right: 15px; display: inline" placeholder="请输入题目总的分数"/>
+                                                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm">保存</button>
+                                            </div>
+                                            <h2 class="layui-colla-title">多选</h2>
+                                            <div class="layui-colla-content layui-show">
+                                                <table class="layui-hide" id="duo" lay-filter="duo"></table>
+                                            </div>
+                                        </div>
+                                        <div class="layui-colla-item">
+                                            <div class="layui-form-mid">填空题分数: </div>
+                                            <div class=" layui-input-block " style="margin-left:auto ">
+                                                <input name="tianzhi" type="number" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;margin-right: 15px; display: inline" placeholder="请输入题目总的分数"/>
+                                                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm">保存</button>
+                                            </div>
+                                            <h2 class="layui-colla-title">填空</h2>
+                                            <div class="layui-colla-content layui-show">
+                                                <table class="layui-hide" id="tian" lay-filter="tian"></table>
+                                            </div>
+                                        </div>
+                                        <div class="layui-colla-item">
+                                            <div class="layui-form-mid">主观分数: </div>
+                                            <div class=" layui-input-block " style="margin-left:auto ">
+                                                <input name="zhuzhi" type="number" value="1" min="0" max="100" step="1" class="layui-input" style="width: auto;margin-right: 15px; display: inline" placeholder="请输入题目总的分数"/>
+                                                <button type="button" class="layui-btn layui-btn-normal layui-btn-sm">保存</button>
+                                            </div>
+                                            <h2 class="layui-colla-title">主观题</h2>
+                                            <div class="layui-colla-content layui-show">
+                                                <table class="layui-hide" id="zhu" lay-filter="zhu"></table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            <fieldset class="layui-elem-field layui-field-title" style="margin-top: 20px;">
+                                <legend>发布时间</legend>
+                            </fieldset>
+                            <div class="layui-form-item" style="display: flex;justify-content: center">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label" style="width: auto;">请选择发布日期</label>
+                                    <div class="layui-input-inline">
+                                        <input name="starttime" required class="layui-input" id="releaseDate2" type="text">
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label" style="width: auto;">请输入考试时间</label>
+                                    <div class="layui-input-inline" style="width: auto">
+                                        <input name="time" required type="number" value="90" min="0" max="300" step="5" class="layui-input" style="width: auto;"/>
+                                    </div>
+                                    <div class="layui-form-mid layui-word-aux">分钟</div>
+                                </div>
+                            </div>
+                            <div class="layui-form-item" style="display: flex;justify-content: center">
+                                <div class="layui-inline">
+                                    <label class="layui-form-label" style="width: auto;">请选择发布年级</label>
+                                    <div class="layui-input-inline">
+                                        <select id="nian" name="nian" lay-filter="grade" lay-verify="required">
+                                            <!--这里进行数据查询-->
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="layui-inline">
+                                    <label class="layui-form-label" style="width: auto;">请输入发布班级</label>
+                                    <div class="layui-input-inline" style="width: auto">
+                                        <select id="ban" name="ban" lay-verify="required">
+                                            <!--数据库查询-->
+                                            <!--<option value=""></option>-->
+                                            <!--<option value="0">1班</option>-->
+                                            <!--<option value="1">2班</option>-->
+                                            <!--<option value="2">3班</option>-->
+                                            <!--<option value="3">4班</option>-->
+                                            <!--<option value="4">5班</option>-->
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <button type="button" lay-submit lay-filter="teacher_exam" class="layui-btn layui-input-inline  layui-btn-radius layui-btn-normal" style=" display: block; margin: auto;">&nbsp&nbsp&nbsp确定并发布考试&nbsp&nbsp&nbsp</button><br>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+    var finalobj;
+    $(document).ready(function () {
+        alert("开始了");
+        AJAX.get("/initSubject", "", function (data) {
+            console.log(data);
+            if (data.flag) {
+                var subjectset = data.map.obj;
+                var subjectid = $("#subject");
+                var subjectid2 = $("#subjectname");
+                for (var i = 0; i < subjectset.length; i++) {
+                    subjectid.append("<option value=\"" + subjectset[i] + "\">" + subjectset[i] + "</option>")
+                }
+                for (var i = 0; i < subjectset.length; i++) {
+                    subjectid2.append("<option value=\"" + subjectset[i] + "\">" + subjectset[i] + "</option>")
+                }
+            }
+        }),
+        AJAX.get("/initGradeName", "", function (data) {
+            console.log(data);
+            if (data.flag) {
+                var subjectset = data.map.obj;
+                console.log(subjectset);
+                var keys1 = Object.keys(subjectset);
+                finalobj = subjectset;
+                var grade = $("#gradeName");
+                var grade1= $("#nian");
+                for (var i = 0; i < keys1.length; i++) {
+                    grade.append("<option id=\'gg123\' value=\"" + keys1[i] + "\">" + keys1[i] + "</option>");
+                    grade1.append("<option id=\'gg123\' value=\"" + keys1[i] + "\">" + keys1[i] + "</option>");
+                }
+                var className = $("#className");
+                var className1 = $("#ban");
+                className.empty();
+                console.log(subjectset[keys1[0]]);
+                for (var i = 0; i < subjectset[keys1[0]].length; i++) {
+                    className.append("<option value=\"" + subjectset[keys1[0][i]] + "\">" + subjectset[keys1[0][i]] + "</option>");
+                    className1.append("<option value=\"" + subjectset[keys1[0][i]] + "\">" + subjectset[keys1[0][i]] + "</option>");
+                }
+            }
+        })
+    })
+    layui.use('form', function() {
+        var form = layui.form;
+        form.on('select(grade)', function (data) {
+            console.log(data);
+            var tt=data.value;
+            var className = $("#className");
+            var className1 = $("#ban");
+            className.empty();
+            className1.empty();
+            for (var i = 0;i<finalobj[tt].length;i++){
+                className.append("<option value=\""+finalobj[tt][i]+"\">" +finalobj[tt][i] + "</option>");
+                className1.append("<option value=\""+finalobj[tt][i]+"\">" +finalobj[tt][i] + "</option>")
+            }
+            form.render('select');
+        });
+    })
+
+    layui.use(['rate','element','form','table','layer'], function(){
+        var element = layui.element;
+        var rate = layui.rate;
+        var form = layui.form;
+        var table = layui.table;
+        var layer = layui.layer;
+        rate.render({
+            elem: '#test9'
+            ,value: 4
+            ,readonly: true
+        });
+        form.on('submit(randomExam)', function(data){
+            // data.field.teacherEmail = 'teacher@163.com';
+            data.field.teacherEmail = $.cookie("userEmail");
+            layer.msg(JSON.stringify(data.field));
+            console.log(data.field);
+            AJAX.post("/subexam",data.field,function (res) {
+                if (res.flag){
+                    layer.msg("发布试卷成功");
+                    AJAX.post("/initErrorTopic",data.field,function (res) {
+                        if (res.flag){
+                            layer.alert("填入信息成功");
+                        }
+                        else{
+                            layer.alert("添加到errorTopic发生了错误");
+                        }
+                    })
+                }
+                else{
+                    alert("发布考试失败");
+                }
+            })
+
+        });
+        form.on('submit(teacher_exam)', function(data){
+            console.log(data.field);
+            data = data.field;
+            var dan=table.checkStatus("dan").data;
+            var duo=table.checkStatus("duo").data;
+            var tian=table.checkStatus("tian").data;
+            var zhu=table.checkStatus("zhu").data;
+            console.log(tian);
+            console.log(zhu);
+            var danlist = [];
+            var duolist = [];
+            var tianlist = [];
+            var zhulist = [];
+            for (var i = 0;i<dan.length;i++){
+                danlist.push(dan[i].id);
+            }
+            for (var i = 0;i<duo.length;i++){
+                duolist.push(duo[i].id);
+            }
+            for (var i = 0;i<tian.length;i++) {
+                tianlist.push(tian[i].pinId);
+            }
+            for (var i = 0;i<zhu.length;i++){
+                zhulist.push(zhu[i].pinId);
+            }
+            data.teacher = $.cookie("userEmail");
+            data.dan = danlist;
+            data.duo = duolist;
+           data.tian = tianlist;
+           data.zhu = zhulist;
+            console.log(data);
+            alert("333333");
+            $.ajax({
+                type:"post",
+                data:JSON.stringify(data),
+                contentType : "application/json;charsetset=UTF-8",
+                dataType:'json',
+                async:false,
+                url:"/subExamByteacher",
+                success:function (res) {
+                    alert(res.flag);
+                    if (res.flag){
+                        layer.msg("发布试卷成功");
+                        AJAX.post("/initErrorTopic2",data,function (res2) {
+                            alert("luelueluelue")
+                            if (res2.flag){
+                                layer.alert("填入信息成功");
+                            }
+                            else{
+                                layer.alert("添加到errorTopic发生了错误");
+                            }
+                        })
+                    }
+                    else{
+                        alert("发布试卷失败");
+                    }
+
+                }
+            })
+            // AJAX.post("/subExamByteacher",data,function (res) {
+            //     alert("444444444");
+            //     if (res.flag){
+            //         layer.msg("发布试卷成功");
+            //         AJAX.post("/initErrorTopic2",data.field,function (res) {
+            //             if (res.flag){
+            //                 layer.alert("填入信息成功");
+            //             }
+            //             else{
+            //                 layer.alert("添加到errorTopic发生了错误");
+            //             }
+            //         })
+            //     }
+            //     else{
+            //         layer.alert("发布考试失败");
+            //     }
+            // })
+        //     myIndex=layer.open({
+        //         type: 1,
+        //         title: "确认发布",
+        //         content: $('#main'), //这里content是一个DOM，注意：最好该元素要存放在body最外层，否则可能被其它的相对元素所影响
+        //         area: ["700px"],
+        //         success: function () {
+        //             form.val("confirmForm", data.field);
+        //         }
+        //     });
+        //     return false;
+        });
+
+    });
+    //日期时间选择器
+    layui.use('laydate', function() {
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#releaseDate'
+            ,type: 'datetime'
+            ,min: 0
+        });
+    })
+    layui.use('laydate', function() {
+        var laydate = layui.laydate;
+        laydate.render({
+            elem: '#releaseDate2'
+            ,type: 'datetime'
+            ,min: 0
+        });
+    })
+
+</script>
+<script>
+    function exit() {
+        $.cookie('userEmail', '', { expires: -1 }); // 删除 cookie
+        $.cookie('token', '', { expires: -1 }); // 删除 cookie
+        $.cookie('examname', '', { expires: -1 }); // 删除 cookie
+    }
+</script>
+<script id="toolbarDemo" type="text/html">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckData">获取选中行数据</button>
+        <button class="layui-btn layui-btn-sm" lay-event="getCheckLength">获取选中数目</button>
+        <button class="layui-btn layui-btn-sm" lay-event="isAll">验证是否全选</button>
+    </div>
+</script>
+<script src="../js/testPaper.js"></script>
+</body>
+</html>>

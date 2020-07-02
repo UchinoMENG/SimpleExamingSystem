@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>学生端主页</title>
+    <script src="../jq/jquery-3.4.1.min (1).js"></script>
+    <script src="../jq/jquery.cookie.js"></script>
+    <link rel="stylesheet" href="../css/teacher_judge.css">
+    <link rel="stylesheet" href="../layui/css/layui.css">
+    <script src="../layui/layui.js"></script>
+    <style>
+        .big{
+            min-height: 500px;
+        }
+        .testBody{
+            border-radius:30px;
+            margin-top: 2%;
+            text-align: center;
+            height: 150px;
+            line-height:2.5em;
+        }
+        .grayD{
+            color: gray;
+        }
+        .blueD{
+            color: blue;
+        }
+        .blueD1{
+            color: #00FF00;
+        }
+        .blueD2{
+            color:gray;
+        }
+    </style>
+</head>
+<body style="background-color:  rgb(245, 247, 249);">
+<div  style="width: 100%;height: 62px;background-color: #363c40;">
+    <div class="layui-col-md10 layui-col-md-offset1">
+        <ul class="layui-nav" lay-filter="" style="background-color: #363c40;">
+            <li  class="layui-nav-item"><a href="" style="font-size:20px">在线考试系统</a></li>
+            <li class="layui-nav-item" style="float:right">
+                <a href="">我</a>
+                <dl class="layui-nav-child">
+                    <dd><a href="personalHomepage (1).jsp">个人界面</a></dd>
+                    <dd><a href="login.html" onclick="exit()">退出</a></dd>
+                    </dl>
+        </li>
+            <li class="layui-nav-item" style="float:right">
+                <a href="学生端主页.html">个人主页 |<span class="layui-badge-dot"></span></a>
+        </li>
+            <li class="layui-nav-item" style="float:right">
+                <a href="message.html"><i class="layui-icon layui-icon-email" style="font-size: 16px; color: #47a7ef;">消息 </i> <span class="layui-badge">1</span> |</a>
+            </li>
+        </ul>
+    </div>
+
+</div>
+<div class="content" >
+    <div class="layui-col-md8 layui-col-md-offset2 big" id="meng" style="background-color: #ffffff;padding: 20px;box-shadow: grey;">
+        <!--            <div class="fieldset">-->
+        <!--                <fieldset class="layui-elem-field layui-field-title" style="margin-top: 26px;">-->
+        <!--                    <legend>未开始的考试</legend>-->
+        <!--                </fieldset>-->
+        <!--            </div>-->
+        <!--            <div class="test layui-col-md8 layui-col-md-offset2"style="background-color:beige">-->
+        <!--                <div class="info">-->
+        <!--                    <span>考试名</span><br>-->
+        <!--                    <span>年级：</span>  <span>大一</span><br>-->
+        <!--                    <span>班级：</span><span>三班</span><br>-->
+        <!--                    <span>考试时间：</span>-->
+        <!--                    <span>2017.9.2.3：00</span>-->
+        <!--                    <span>至</span>-->
+        <!--                    <span>2017.9.2.3：00</span>-->
+
+        <!--                </div>-->
+        <!--            </div>-->
+        <!--            <div class="test layui-col-md8 layui-col-md-offset2"style="background-color:beige">-->
+        <!--                <div class="info">-->
+        <!--                    考试通知2-->
+        <!--                </div>-->
+        <!--            </div>-->
+
+    </div>
+</div>
+</body>
+<script>
+    function exit() {
+        $.cookie('userEmail', '', { expires: -1 }); // 删除 cookie
+        $.cookie('token', '', { expires: -1 }); // 删除 cookie
+        $.cookie('examname', '', { expires: -1 }); // 删除 cookie
+    }
+</script>
+<script>
+    //注意：导航 依赖 element 模块，否则无法进行功能性操作
+    $(document).ready(function () {
+        alert($.cookie("useremail"));
+        alert($.cookie("token"));
+        $.ajax({
+            url:"/studentTestShow",
+            data:{
+                "studentEmail":$.cookie("userEmail")
+            },
+            type:"GET",
+            success:function (res) {
+                var data =JSON.parse(res);
+                console.log(data);
+                if(data.code=="200"){
+                    console.log(data);
+                    let len=data.data.length;
+                    console.log(len);
+                    // console.log(data.data[i]["id"]);
+                    let i=0;
+                    let j=0;
+                    let k=0;
+                    let f1=0;
+                    let f2=0;
+                    let f3=0;
+                    var nearlyExam;//最近结束的考试
+                    for(;i<len;i++) {
+                        var start = new Date(data.data[i]["startTime"].replace("-", "/"));
+                        var end = new Date(data.data[i]["examTime"].replace("-", "/"));
+                        var cur = new Date();
+                        //DateFormat df = new SimpleDateFormat("mmmm dS, yyyy, h:MM:ss TT");
+                        console.log(start);
+                        console.log(end);
+                        console.log(cur);
+
+                        if (cur < start ) {
+                            alert("a"+i);
+                            if (0===f1){
+                                alert("为开始");
+                                $("#meng").append(
+                                    "<div class=\"test layui-col-md8 layui-col-md-offset2\">"+
+                                    "<fieldset class=\"layui-elem-field layui-field-title\" style=\"margin-top: 26px;\">\n" +
+                                    "                    <legend style=\"margin-left: 42%\">未开始的考试</legend>\n" +
+                                    "                </fieldset>"+
+                                    "</div>"
+                                )
+                                f1++;
+                            }
+                            if (data.data[k]["score"]==0){
+                                strDid="未阅";
+                            }else{
+                                strDid="已阅";
+                            }
+                            $("#meng").append(
+                                "<div class=\"testPre testBody layui-col-md8 layui-col-md-offset2\"style=\"background-color:beige\">\n" +
+                                "                 <div id='disID" + i + "'style='display:none'>" + data.data[j]["score"] + "</div>\n" +
+                                "                <div class=\"info\">\n" +
+                                "                    <span class=\"grayD\">考试名:</span><span class='examName1'>" + data.data[i]["examName"] + "</span><span  class=\"blueD\">"+strDid+"</span><br>\n" +
+                                "                    <span class=\"grayD\">年级：</span>  <span>" + data.data[i]["gradeName"] + "</span><br>\n" +
+                                "                    <span class=\"grayD\">班级：</span><span>" + data.data[i]["className"] + "</span><br>\n" +
+                                "                    <span class=\"grayD\">考试时间：</span>\n" +
+                                "                    <span class=\"blueD\">" + data.data[i]["startTime"] + "</span>\n" +
+                                "                    <span class=\"grayD\">至</span>\n" +
+                                "                    <span class=\"blueD\">" + data.data[i]["examTime"] + "</span>\n" +
+                                "\n" +
+                                "                </div>\n" +
+                                "            </div>"
+                            )
+
+                        }
+                        layui.use('element', function () {
+                            var element = layui.element;
+                            element.init();
+                        });
+                    }
+
+
+                    for(;j<len;j++) {
+
+                        var start = new Date(data.data[j]["startTime"].replace("-", "/"));
+                        var end = new Date(data.data[j]["examTime"].replace("-", "/"));
+                        var cur = new Date();
+                        //DateFormat df = new SimpleDateFormat("mmmm dS, yyyy, h:MM:ss TT");
+                        console.log(start);
+                        console.log(end);
+                        console.log(cur);
+                        console.log(data.data[j]["score"]);
+
+                        if (cur < end && cur>start && data.data[j]["did"]==0) {
+                            alert("b");
+                            if (0===f2){
+                                $("#meng").append(
+                                    "<div class=\"test layui-col-md8 layui-col-md-offset2\">"+
+                                    "<fieldset class=\"layui-elem-field layui-field-title\" style=\"margin-top: 26px;\">\n" +
+                                    "                    <legend style=\"margin-left: 42%\">正在进行的考试</legend>\n" +
+                                    "                </fieldset>"+
+                                    "</div>"
+                                )
+                                f2++;
+                            }
+                            if (data.data[k]["score"]!=0){
+                                strDid="已阅";
+                            }else{
+                                strDid="未阅";
+                            }
+                            $("#meng").append(
+                                "<div class=\"testIng testBody layui-col-md8 layui-col-md-offset2\"style=\"background-color:beige\">\n" +
+                                "                 <div id='disID" + i + "'style='display:none'>" + data.data[j]["score"] + "</div>\n" +
+                                "                <div class=\"info\">\n" +
+                                "                    <span class=\"grayD\">考试名:</span><span class='examName1'>" + data.data[j]["examName"] + "</span><span  class=\"blueD\">"+strDid+"</span><br>\n" +
+                                "                    <span class=\"grayD\">年级：</span>  <span>" + data.data[j]["gradeName"] + "</span><br>\n" +
+                                "                    <span class=\"grayD\">班级：</span><span>" + data.data[j]["className"] + "</span><br>\n" +
+                                "                    <span class=\"grayD\">考试时间：</span>\n" +
+                                "                    <span class=\"blueD1\">" + data.data[j]["startTime"] + "</span>\n" +
+                                "                    <span class=\"grayD\">至</span>\n" +
+                                "                    <span class=\"blueD1\">" + data.data[j]["examTime"] + "</span>\n" +
+                                "\n" +
+                                "                </div>\n" +
+                                "            </div>"
+                            )
+                        }
+                        layui.use('element', function () {
+                            var element = layui.element;
+                            element.init();
+                        });
+                    }
+
+                    for(;k<len;k++) {
+                        var start = new Date(data.data[k]["startTime"].replace("-", "/"));
+                        var end = new Date(data.data[k]["examTime"].replace("-", "/"));
+                        var cur = new Date();
+                        //DateFormat df = new SimpleDateFormat("mmmm dS, yyyy, h:MM:ss TT");
+                        console.log(start);
+                        console.log(end);
+                        console.log(cur);
+                            if (cur >end || (cur < end && cur>start && data.data[j]["did"]>0)) {
+                            alert("c");
+                            if (0===f3){
+                                //结束的最近考试
+                                nearlyExam=end;
+                                $.cookie("examName", data.data[k]["examName"] ,'/');
+                                $("#meng").append(
+                                    "<div  class=\"test layui-col-md8 layui-col-md-offset2\">"+
+                                    "<fieldset class=\"layui-elem-field layui-field-title\" style=\"margin-top: 26px;\">\n" +
+                                    "                    <legend style=\"margin-left: 42%\">已经结束的考试</legend>\n" +
+                                    "                </fieldset>"+
+                                    "</div>"
+                                );
+                                f3++;
+                            }
+                            //最近考试
+                            if(nearlyExam<end){
+                                $.cookie("examName", data.data[k]["examName"] ,'/');
+                            }
+                                if (data.data[k]["score"]==0){
+                                    strDid="未阅";
+                                }else{
+                                    strDid="已阅";
+                                }
+                            $("#meng").append(
+                                "<div class=\"testEnd testBody layui-col-md8 layui-col-md-offset2\"style=\"background-color:beige\">\n" +
+                                "                <div class=\"info\">\n" +
+                                "                    <span class=\"grayD\">考试名:</span><span class='examName1'>" + data.data[k]["examName"] + "</span><span  class=\"blueD\">"+strDid+"</span><br>\n" +
+                                "                    <span class=\"grayD\">年级：</span>  <span>" + data.data[k]["gradeName"] + "</span><br>\n" +
+                                "                    <span class=\"grayD\">班级：</span><span>" + data.data[k]["className"] + "</span><br>\n" +
+                                "                    <span class=\"grayD\">考试时间：</span>\n" +
+                                "                    <span class=\"blueD2\">" + data.data[k]["startTime"] + "</span>\n" +
+                                "                    <span class=\"grayD\">至</span>\n" +
+                                "                    <span class=\"blueD2\">" + data.data[k]["examTime"] + "</span>\n" +
+                                "\n" +
+                               // "                 <div id='disID" + i + "'style='display:none'>" + data.data[k]["score"] + "</div>\n" +
+                                "                </div>\n" +
+                                "            </div>"
+                            )
+                        }
+                        layui.use('element', function () {
+                            var element = layui.element;
+                            element.init();
+                        });
+                    }
+                }
+            },
+            error:function (data) {
+                alert("请求失败")
+            }
+        })
+    })
+
+    layui.use(['element','layer'], function(){
+        var element = layui.element;
+//未开始
+        $(document).on('click','.testPre',function () {
+            //var examName=$(".examName1").html();
+            // var examName=$(this).children().children().eq(1).html();
+            // alert(examName);
+            // alert($.cookie("userEmail"));
+            // $.cookie("examName", examName,'/');
+            // alert($.cookie("examName"));
+            // window.location.href="student_wrong_questions.html";
+            layer.alert("还未开始")
+        })
+//正在考试
+        $(document).on('click','.testIng',function () {
+
+            var examName=$(this).children().children().eq(1).html();
+            alert(examName);
+            alert($.cookie("userEmail"));
+            $.cookie("examName", examName,'/');
+            alert($.cookie("examName"));
+            window.location.href="考试界面3.html";
+        })
+//结束的考试
+        $(document).on('click','.testEnd',function () {
+            var end = $(this).children().children().eq(13).html();
+            alert(end);
+            end = new Date(end.replace("-", "/"));
+            var cur = new Date();
+            alert(end);
+            if(cur>end){
+                var examName=$(this).children().children().eq(1).html();
+                alert(examName);
+                alert($.cookie("userEmail"));
+                $.cookie("examName", examName,'/');
+                alert($.cookie("examName"));
+                window.location.href="student_wrong_questions.html";
+            }else{
+                layer.msg("还没到时间")
+            }
+        })
+//nav导航栏
+        //修改信息
+        // $(document).on('click','#modifyNav',function () {
+        //     alert($.cookie("userEmail"));
+        //     window.location.href="modify.html";
+        // })
+        // //个人中心
+        // $(document).on('click','.personalHomepageNav',function () {
+        //     alert($.cookie("userEmail"));
+        //     window.location.href="personalHomepage (1).jsp";
+        // })
+        //退出
+        //错题分析
+        //上面已经存好了最近考试名
+        $(document).on('click','#studentWrongNav',function () {
+            alert($.cookie("examName"));
+            window.location.href="student_wrong_questions.html";
+        })
+
+    });
+    // For convenience...
+    Date.prototype.format = function (mask, utc) {
+        return dateFormat(this, mask, utc);
+    };
+</script>
+</html>

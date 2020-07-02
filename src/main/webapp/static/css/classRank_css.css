@@ -1,0 +1,44 @@
+body{
+    background-color: rgb(245, 247, 249);
+}
+.main{
+    width: 95%;
+    margin: auto;
+    display: flex;
+    justify-content: space-between;
+}
+.main .main_left{
+    background-color: white;
+    width: 18%;
+    padding: 10px;
+    margin-top: 30px;
+    border-radius: 20px;
+    border: #629bb1 solid 2px;
+    box-shadow: #86b1c2 4px 5px;
+}
+.main .main_left img{
+    display: block;
+    width: 190px;
+    margin: 10px auto 20px;
+}
+.main .main_left>div{
+    margin: 30px auto;
+    height: 42px;
+    line-height: 42px;
+    font-size: 12px;
+    color: #0C0C0C;
+    background-color: rgb(219,239,252);
+    border-radius: 50px;
+}
+.main .main_left>div .layui-form-label{
+    margin-left: 24px;
+    line-height: 26px;
+    text-align: left;
+}
+/*成绩排名面板*/
+.main .layui-card{
+    background-color: white;
+    width: 78%;
+    margin-top: 30px;
+
+}
